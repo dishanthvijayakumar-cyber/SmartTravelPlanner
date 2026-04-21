@@ -3,7 +3,7 @@ st.set_page_config(page_title="SmartTravel - Home", page_icon="🌆") #Tab Title
 
 #Notes: Majority of Markdown Code is AI generated; this formatting looks nicer,
 # however I'm not sure if we're allowed to use the complicated ones
-# We can change back to the simpler version learned in class if needed, Hallo Yannis
+# We can change back to the simpler version learned in class if needed
 
 #Page Title & Subheaders
 st.markdown("<h2 style='color:#8a2be2;'>✨ AI Powered Travel Planning ✨</h2>", unsafe_allow_html=True) #adds purple subheader
