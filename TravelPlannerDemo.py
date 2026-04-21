@@ -6,7 +6,7 @@ st.set_page_config(page_title="SmartTravel - Home", page_icon="🌆") #Tab Title
 # We can change back to the simpler version learned in class if needed
 
 #Page Title & Subheaders
-st.markdown("<h2 style='color:#8a2be2;'>✨ AI Powered Travel Planning ✨</h2>", unsafe_allow_html=True) #adds purple subheader
+st.markdown("<h2 style='color:#8a2be2;'>✨ AI Powered Travel Planning ✨</h2>", unsafe_allow_html=True) #adds purple lvl 2 header
 st.title("Discover Your Perfect Destination with SmartTravel 🌍")
 st.subheader("Let us guide you to unforgettable adventures tailored specifically to your travel preferences and dreams.")
 
@@ -39,32 +39,20 @@ st.markdown("<div style='margin-top: 400px;'></div>", unsafe_allow_html=True)
 
 #Discover Your Way Section
 st.title("Discover Your Way")
-st.subheader("Not sure where to start? Try one of these alternative ways to find your perfect destination:")
-col1, col2 = st.columns(2)
-with col1: # Code AI generated: Formats the left column with a button and description for "Find by Photos" feature, centered with background and square
-    st.markdown("""
-        <div style='border: 2px solid #6a0dad; border-radius: 14px; padding: 18px; text-align: center; background: #f8f1ff; max-width: 360px; margin: 0 auto;'>
-            <img src='https://cdn-icons-png.flaticon.com/512/3656/3656900.png' width='80' style='display:block; margin: 0 auto 12px;' />
-            <h3 style='color:#6a0dad; margin: 0 0 8px;'>Surprise Me!</h3>
-            <p style='color:#4c1d95; font-size: 12px; margin: 0 0 12px;'>Feeling adventurous? Let us surprise you with a random destination and discover something unexpected.</p>
-            <div style='display:flex; justify-content:center;'>
-                <button style='background-color:#6a0dad; color:white; border:none; border-radius:8px; padding:8px 18px; cursor:pointer;'>🎲 Surprise Me!</button>
-            </div>
-        </div>
-    """, unsafe_allow_html=True)
-    #Markdown Notes: H3 = Level 3 heading, P = paragraph, div = container for button and description, border = purple border, border-radius = rounded corners, padding = space inside container, text-align = center content, background = light purple background, max-width = limits square width, margin = centers square
+st.subheader("Not sure where to start? Try an alternative way to find your perfect destination:")
 
-with col2: # Code AI generated: Formats the "Find by Photos!" button with a purple border, rounded corners, and an image icon. The button is centered and has a description above it.
-    st.markdown("""
-        <div style='border: 2px solid #6a0dad; border-radius: 14px; padding: 18px; text-align: center; background: #f8f1ff; max-width: 360px; margin: 0 auto;'>
-            <img src='https://www.freeiconspng.com/thumbs/camera-icon/camera-icon-21.png' width='80' style='display:block; margin: 0 auto 12px;' />
-            <h3 style='color:#6a0dad; margin: 0 0 8px;'>Find by Photos!</h3>
-            <p style='color:#4c1d95; font-size: 12px; margin: 0 0 12px;'>Upload up to 3 photos of places you love and we'll find similar destinations for your next adventure.</p>
-            <div style='display:flex; justify-content:center;'>
-                <button style='background-color:#6a0dad; color:white; border:none; border-radius:8px; padding:8px 18px; cursor:pointer;'>📷 Find by Photos!</button>
-            </div>
+#Code AI generated: Formats icon with a button and description for "Find by Photos" feature, centered with background and square
+st.markdown("""
+    <div style='border: 2px solid #6a0dad; border-radius: 14px; padding: 18px; text-align: center; background: #f8f1ff; max-width: 360px; margin: 0 auto;'>
+        <img src='https://cdn-icons-png.flaticon.com/512/3656/3656900.png' width='80' style='display:block; margin: 0 auto 12px;' />
+        <h3 style='color:#6a0dad; margin: 0 0 8px;'>Surprise Me!</h3>
+        <p style='color:#4c1d95; font-size: 12px; margin: 0 0 12px;'>Feeling adventurous? Let us surprise you with a random destination and discover something unexpected.</p>
+        <div style='display:flex; justify-content:center;'>
+            <button style='background-color:#6a0dad; color:white; border:none; border-radius:8px; padding:8px 18px; cursor:pointer;'>🎲 Surprise Me!</button>
         </div>
-    """, unsafe_allow_html=True)
+    </div>
+""", unsafe_allow_html=True)
+#Markdown Notes: H3 = Level 3 heading, P = paragraph, div = container for button and description, border = purple border, border-radius = rounded corners, padding = space inside container, text-align = center content, background = light purple background, max-width = limits square width, margin = centers square
 
 
 #add spacing with 400px distance (AI generated)
