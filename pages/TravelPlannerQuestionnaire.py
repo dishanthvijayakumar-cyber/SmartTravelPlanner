@@ -1,7 +1,7 @@
 import streamlit as st
 st.set_page_config(page_title="SmartTravel - Questionnaire", page_icon="❓")
 
-import sys
+import sys #AI-generated
 sys.path.append('..')
 from recommender import get_recommendations
 
@@ -17,7 +17,7 @@ st.subheader("Welcome to the Travel Planner Questionnaire! Please answer the fol
 
 #selectboxes Travel Style
 st.subheader("1. Travel Style")
-tools = ["Luxury Traveler: Premium Experiences & Accomodations", "Adventure Seeker: Thrilling Activities & Outdoor Exploration", "Cultural Explorer: History, Art & Local Traditions", "Relaxation Focused: Beach Resorts & Peaceful Retreats", "Budget Backpacker: Affordable Travel & Authentic Experiences"]
+tools = ["Luxury Traveler: Premium Experiences & Accommodations", "Adventure Seeker: Thrilling Activities & Outdoor Exploration", "Cultural Explorer: History, Art & Local Traditions", "Relaxation Focused: Beach Resorts & Peaceful Retreats", "Budget Backpacker: Affordable Travel & Authentic Experiences"]
 travel_style = st.selectbox("What's your travel style?", tools)
 
 
@@ -50,21 +50,10 @@ st.write(f"Your daily budget is: ${daily_budget}")
 
 #selectboxes Ideal Climate
 st.subheader("4. Ideal Climate")
-climates = ["Tropical", "Temperate", "Cold", "Desert", "Any Climate - Weather doesn't matter to me"]
+climates = ["Tropical", "Temperate", "Cold", "Desert"]
 ideal_climate = st.selectbox("Choose your preferred weather", climates)
 
-
-#Slider Travel Duration
-st.subheader("5. How Long is your trip?")
-travel_duration = st.slider("How long is your trip?", min_value=1, max_value=60, step=1, value=7)
-
-if travel_duration == 1:
-    st.write(f"Your trip duration is: {travel_duration} day")   
-else:
-    st.write(f"Your trip duration is: {travel_duration} days")
-
-
-#selectboxes Travel Pace
+#Selectboxes Travel Pace
 st.subheader("6. Your Travel Pace")
 travel_pace = ["Relaxed: Take it slow, enjoy each moment", "Moderate: Balance of activities and rest", "Packed: See and do as much as possible"]
 travel_pace = st.selectbox("How do you like to experience destinations?", travel_pace)
@@ -77,14 +66,7 @@ accommodation = st.multiselect("What type of accommodations do you like most?", 
 for accomodation in accommodation:
     st.write(f"- {accomodation}")
 
-#selectboxes Travel Transportation
-st.subheader("8. Your Travel Transportation")
-transportation_options = ["Air Travel", "Train Travel", "Road Trips (Car Rental)", "Cruises", "Public Transportation (Buses, Subways)", "Biking", "Walking", "Domestic Flights", "International Flights"]
-transportation = st.multiselect("What modes of transportation do you prefer?", transportation_options)
-for transportation in transportation:
-    st.write(f"- {transportation}")
-
-#selectboxes Activities
+#Selectboxes Activities
 st.subheader("9. Your Preferred Activities")
 activities_options = ["City Tours", "Nature Hikes", "Cultural Experiences (Museums, Local Events)", "Adventure Activities (Ziplining, Rafting)", "Relaxation (Spas, Beach Days)", "Food & Drink Experiences (Cooking Classes, Wine Tasting)", "Nightlife (Bars, Clubs)", "Shopping", "Wildlife Encounters", "Historical Sites"]
 activities = st.multiselect("What activities do you enjoy most while traveling?", activities_options)
