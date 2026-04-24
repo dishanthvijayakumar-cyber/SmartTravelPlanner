@@ -55,12 +55,12 @@ climates = ["Tropical", "Temperate", "Cold", "Desert"]
 ideal_climate = st.selectbox("Choose your preferred weather", climates)
 
 #Selectboxes Travel Pace
-st.subheader("6. Your Travel Pace")
+st.subheader("5. Your Travel Pace")
 travel_pace = ["Relaxed: Take it slow, enjoy each moment", "Moderate: Balance of activities and rest", "Packed: See and do as much as possible"]
 travel_pace = st.selectbox("How do you like to experience destinations?", travel_pace)
 
-#Selectboxes Travel Accomodation
-st.subheader("7. Your Travel Accommodation")
+#Selectboxes Travel Accommodation
+st.subheader("6. Your Travel Accommodation")
 accomodation_options = ["Luxury Hotels", "Mid-range Hotels", "Budget Hotels", "Cabins", "Camping", "Hostels", "Vacation Rentals (Airbnb, etc.)", "Boutique Hotels", "Resorts", "Bed & Breakfasts"]
 
 accommodation = st.multiselect("What type of accommodations do you like most?", accomodation_options) 
@@ -68,11 +68,16 @@ for accomodation in accommodation:
     st.write(f"- {accomodation}")
 
 #Selectboxes Activities
-st.subheader("9. Your Preferred Activities")
+st.subheader("7. Your Preferred Activities")
 activities_options = ["City Tours", "Nature Hikes", "Cultural Experiences (Museums, Local Events)", "Adventure Activities (Ziplining, Rafting)", "Relaxation (Spas, Beach Days)", "Food & Drink Experiences (Cooking Classes, Wine Tasting)", "Nightlife (Bars, Clubs)", "Shopping", "Wildlife Encounters", "Historical Sites"]
 activities = st.multiselect("What activities do you enjoy most while traveling?", activities_options)
 for activity in activities:
     st.write(f"- {activity}")
+
+#Slider Duration
+st.subheader("8. How long would you stay?")
+daily_budget = st.slider("Days", min_value=0, max_value=365, step=1, value=1)
+st.write(f"Your stay would last: {daily_budget}days")
 
 
 #add spacing between buttons and stats with 150px distance (AI generated)
