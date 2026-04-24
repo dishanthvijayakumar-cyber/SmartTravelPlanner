@@ -4,32 +4,36 @@ st.set_page_config(page_title="SmartTravel - Dashboard", page_icon="👤")
 if st.button("Return Home", icon="🏠"):
     st.switch_page("TravelPlannerDemo.py")
 
-st.title("Your Travel Dashboard") #dashboard title
+if "selected_destination" not in st.session_state:
+    st.warning("No destination selected yet!")
+    if st.button("Go to Questionnaire"):
+        st.switch_page("pages/TravelPlannerQuestionnaire.py")
+    st.stop()
+
+destination = st.session_state.selected_destination
+
+st.title("Your Travel Dashboard")
 st.header("My Trip Itinerary")
 
-
-# Trip Overview Section
 st.header("📅 Trip Overview")
-col1, col2, col3, col4 = st.columns(4) 
+col1, col2, col3, col4 = st.columns(4)
 with col1:
     st.subheader("Destination:")
-    st.write("Kyoto, Japan") # This should be dynamically generated based on user input
+    st.write(destination["name"])  # dynamique
 with col2:
-    travel_duration = 5 # Connect this to the actual travel_duration from the questionnaire etc.
+    travel_duration = st.session_state.preferences.get("travel_duration", 7) if "preferences" in st.session_state else 7
     st.subheader("Duration:")
     if travel_duration == 1:
-        st.write(f"{travel_duration} day")  
+        st.write(f"{travel_duration} day")
     else:
         st.write(f"{travel_duration} days")
 with col3:
-    st.subheader("Travel Dates:")
-    st.write("2026-04-15 - 2026-04-19") # This should be dynamically generated based on user input, pot. from questionnaire
-    st.button("Edit", icon="✏️")
+    st.subheader("Country:")
+    st.write(destination["country"])  # dynamique
 with col4:
-    daily_budget = 500 # Connect this to the actual daily_budget from the questionnaire etc.
+    daily_budget = st.session_state.preferences.get("daily_budget", 0) if "preferences" in st.session_state else 0
     st.subheader("Daily Budget:")
     st.write(f"${daily_budget}")
-
 
 
 # Daily Itinerary Section
