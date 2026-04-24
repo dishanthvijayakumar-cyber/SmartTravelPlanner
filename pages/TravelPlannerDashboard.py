@@ -21,7 +21,7 @@ with col1:
     st.subheader("Destination:")
     st.write(destination["place"])
 with col2:
-    travel_duration = st.session_state.preferences.get("travel_duration", 7) if "preferences" in st.session_state else 7
+    travel_duration = st.session_state.preferences.get("travel_duration")
     st.subheader("Duration:")
     if travel_duration == 1:
         st.write(f"{travel_duration} day")
