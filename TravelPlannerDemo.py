@@ -46,24 +46,18 @@ st.markdown("<div style='margin-top: 400px;'></div>", unsafe_allow_html=True)
 st.title("Discover Your Way")
 st.subheader("Not sure where to start? Try an alternative way to find your perfect destination:")
 
-if st.button("🎲 Surprise Me!", use_container_width=False):
-    destinations = get_destinations()
-    random_destination = random.choice(destinations)
-    st.session_state.selected_destination = random_destination
-    st.switch_page("pages/TravelPlannerDashboard.py")
+col1, col2, col3 = st.columns([1,2,1]) #makes three columns for features, with middle column being larger
+with col2: 
+    with st.container(border=True):
+        st.image("https://cdn-icons-png.flaticon.com/512/3656/3656900.png", width=80) #adds icon for "Surprise Me" feature
+        st.subheader("Surprise Me!")
+        st.write("Feeling adventurous? Let us surprise you with a random destination and discover something unexpected.")
+        if st.button("🎲 Surprise Me!", use_container_width=False):
+            destinations = get_destinations()
+            random_destination = random.choice(destinations)
+            st.session_state.selected_destination = random_destination
+            st.switch_page("pages/TravelPlannerDashboard.py")
     
-#Code AI generated: Formats icon with a button and description for "Find by Photos" feature, centered with background and square
-st.markdown("""
-    <div style='border: 2px solid #6a0dad; border-radius: 14px; padding: 18px; text-align: center; background: #f8f1ff; max-width: 360px; margin: 0 auto;'>
-        <img src='https://cdn-icons-png.flaticon.com/512/3656/3656900.png' width='80' style='display:block; margin: 0 auto 12px;' />
-        <h3 style='color:#6a0dad; margin: 0 0 8px;'>Surprise Me!</h3>
-        <p style='color:#4c1d95; font-size: 12px; margin: 0 0 12px;'>Feeling adventurous? Let us surprise you with a random destination and discover something unexpected.</p>
-        <div style='display:flex; justify-content:center;'>
-            <button style='background-color:#6a0dad; color:white; border:none; border-radius:8px; padding:8px 18px; cursor:pointer;'>🎲 Surprise Me!</button>
-        </div>
-    </div>
-""", unsafe_allow_html=True)
-#Markdown Notes: H3 = Level 3 heading, P = paragraph, div = container for button and description, border = purple border, border-radius = rounded corners, padding = space inside container, text-align = center content, background = light purple background, max-width = limits square width, margin = centers square
 
 
 #add spacing with 400px distance (AI generated)
