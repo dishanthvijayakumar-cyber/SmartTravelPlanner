@@ -56,7 +56,7 @@ with col2:
             destinations = get_destinations()
             random_destination = random.choice(destinations)
             st.session_state.selected_destination = random_destination
-            st.switch_page("pages/TravelPlannerDashboard.py")
+            st.switch_page("pages/TravelPlannerSurprise.py")
     
 
 
