@@ -1,5 +1,6 @@
 from database import get_destinations
 
+#Creation of the function calculating the score
 def calculate_score(destinations, preferences):
     score = 0
 
@@ -20,7 +21,7 @@ def calculate_score(destinations, preferences):
         for interest in user_interests:
             if interest in destinations["interests"]:
                 matches += 1
-        score += 14.28 * (matches / len(user_interests))
+        score += 14.28 * (matches / len(user_interests)) #for proportion reason depending on the number of interests present
 
     #DAILY BUDGET (100/7 = 14.28 pts)
     user_budget = preferences["daily_budget"]
@@ -34,7 +35,7 @@ def calculate_score(destinations, preferences):
         for activities in user_activities:
             if activities in destinations["activities"]:
                 matches += 1
-        score += 14.28 * (matches / len(user_activities))
+        score += 14.28 * (matches / len(user_activities)) #for proportion reason depending on the number of activities present
 
     #ACCOMODATION (100/7 = 14.28 pts)
     user_accommodation = preferences["accommodation"]
@@ -43,7 +44,7 @@ def calculate_score(destinations, preferences):
         for accommodation in user_accommodation:
             if accommodation in destinations["accommodation"]:
                 matches += 1
-        score += 14.28 * (matches / len(user_accommodation))
+        score += 14.28 * (matches / len(user_accommodation)) #for proportion reason depending on the number of accommodations present
 
     #TRAVEL PACE (100/7 = 14.28 pts)
     user_pace = preferences ["travel_pace"]
@@ -54,11 +55,19 @@ def calculate_score(destinations, preferences):
 
 
 def get_recommendations(preferences, top_n=10):
+    #Report all destination from the database
     all_destinations = get_destinations()
+    
     results = []
     for destination in all_destinations:
+        #Calculate the compatibility score for each destination based on user preferences
         score = calculate_score(destination, preferences)
+        #Add the score to the destination dictionary, rounded to 1 decimal place
         destination["score"] = round(score, 1)
         results.append(destination)
+    
+    #Sort destinations by score from highest to lowest
     results.sort(key=lambda x: x["score"], reverse=True)
+    
+    #Return only the top N (10) destinations
     return results[:top_n]
