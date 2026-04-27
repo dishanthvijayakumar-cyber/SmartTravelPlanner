@@ -1,6 +1,8 @@
+-- Delete tables in case they were already existing
 DROP TABLE IF EXISTS destinations;
 DROP TABLE IF EXISTS destination_tags;
 
+-- Creation of the destinations' table
 CREATE TABLE destinations (
     id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     place TEXT NOT NULL,
@@ -263,7 +265,7 @@ INSERT INTO destinations (place, country, climate, budget_min, budget_max, descr
 ('Curacao', 'Netherlands', 'Tropical', 120, 350, 'Colorful Caribbean island', 'Divers', 'Relaxed'),
 ('Bonaire', 'Netherlands', 'Tropical', 120, 350, 'Top diving destination', 'Divers', 'Relaxed');
 
-
+-- Creation of the tags' table
 CREATE TABLE destination_tags (
     id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     destination_id INTEGER NOT NULL,
