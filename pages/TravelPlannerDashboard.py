@@ -1,4 +1,6 @@
 import streamlit as st
+from API import get_weather
+
 st.set_page_config(page_title="SmartTravel - Dashboard", page_icon="👤")
 
 if st.button("Return Home", icon="🏠"):
@@ -35,11 +37,26 @@ with col4:
     st.subheader("Daily Budget:")
     st.write(f"${daily_budget}")
 
+#Weather Section
+st.header("🌤️ Current Weather")
+weather = get_weather(destination["place"])
+
+if weather:
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        st.metric("Temperature", f"{weather['temp']}°C")
+    with col2:
+        st.metric("Humidity", f"{weather['humidity']}%")
+    with col3:
+        st.metric("Wind Speed", f"{weather['wind_speed']} m/s")
+    with col4:
+        st.metric("Conditions", weather['description'].capitalize())
+else: 
+    st.warning("Weather data unavailable for this destination")
 
 # Daily Itinerary Section
 st.header("🗺️ Daily Itinerary")
 
-travel_duration = 7 # Connect this to the actual travel_duration from the questionnaire etc.
 #this sub-section is AI generated, but not too complicated
 if "selected_day" not in st.session_state: # Initialize selected_day in session state if it doesn't exist
     st.session_state.selected_day = 1 # Defaults to Day 1 on initial load
