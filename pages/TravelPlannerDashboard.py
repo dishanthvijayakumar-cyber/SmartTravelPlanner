@@ -23,12 +23,16 @@ with col1:
     st.subheader("Destination:")
     st.write(destination["place"])
 with col2:
-    travel_duration = st.session_state.preferences.get("travel_duration", 7) if "preferences" in st.session_state else 7
+    travel_duration = 7  # default travel duration if no saved preference exists
+    if "preferences" in st.session_state:
+        travel_duration = st.session_state.preferences.get("travel_duration", travel_duration)  # read duration from saved preferences if available
+    elif "travel_duration" in st.session_state:
+        travel_duration = st.session_state.travel_duration  # read duration directly from session state if preferences dict is missing
     st.subheader("Duration:")
     if travel_duration == 1:
-        st.write(f"{travel_duration} day")
+        st.write(f"{travel_duration} day")  # display singular day label for a one-day trip
     else:
-        st.write(f"{travel_duration} days")
+        st.write(f"{travel_duration} days")  # display plural days label for multi-day trips
 with col3:
     st.subheader("Country:")
     st.write(destination["country"])
