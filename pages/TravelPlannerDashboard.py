@@ -1,5 +1,5 @@
 import streamlit as st
-from API import get_weather
+from API import get_weather, get_activities
 
 st.set_page_config(page_title="SmartTravel - Dashboard", page_icon="👤")
 
