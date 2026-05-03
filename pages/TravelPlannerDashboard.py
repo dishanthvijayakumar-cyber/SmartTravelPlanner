@@ -76,6 +76,19 @@ for i, col in enumerate(day_cols, 1):
 
 selected_day = st.session_state.selected_day # Gets the selected day from session state
 st.subheader(f"Day {selected_day} schedule")
-st.write(f"Details for Day {selected_day} go here.") # Adapt this to show actual itinerary
+# Fetch activities based on user preferences and selected destination
+activities = st.session_state.preferences.get("activities", [])
+travel_pace = st.session_state.preferences.get("travel_pace", "Moderate: Balance of activities and rest")
+
+recommended = get_activities(destination["place"], activities, travel_pace)
+
+if recommended:
+    for i, activity in enumerate(recommended, 1):
+        st.markdown(f"**{i}. {activity['name']}**")
+        st.write(f"📍 {activity['category']}")
+        st.write(f"🗺️ {activity['address']}")
+        st.markdown("---")
+else:
+    st.warning("No activities found for this destination.")
 
     
