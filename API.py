@@ -50,8 +50,8 @@ pace_map = {
     "Packed: See and do as much as possible": 5
 }
 
- # Get how many activities to return based on pace
- limit = pace_map.get(travel_pace, 3)
+# Get how many activities to return based on pace
+limit = pace_map.get(travel_pace, 3)
 
 # Get category IDs matching user's selected activities
 # If no match found, default to landmarks (16000)
