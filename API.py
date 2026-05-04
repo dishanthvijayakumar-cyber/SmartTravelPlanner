@@ -27,62 +27,61 @@ def get_weather(city):
       return None #city not found or API error
 
 def get_activities(city, activities, travel_pace):
-  """Fetch recommended activities from Foursquare based on user preferences"""
+    """Fetch recommended activities from Foursquare based on user preferences"""
 
-# Map questionnaire answers to Foursquare category IDs
-category_map ={
-    "City Tours": "16000",           # landmarks
-    "Nature Hikes": "16032",         # outdoors
-    "Historical Sites": "16026",     # historical sites
-    "Cultural Experiences (Museums, Local Events)": "10027",  # arts
-    "Food & Drink Experiences (Cooking Classes, Wine Tasting)": "13000",  # food
-    "Relaxation (Spas, Beach Days)": "18000",   # wellness
-    "Adventure Activities (Ziplining, Rafting)": "16032",  # outdoors
-    "Nightlife (Bars, Clubs)": "10032",          # nightlife
-    "Shopping": "17000",             # shopping
-    "Wildlife Encounters": "16034"   # nature
-}
-
-# Map travel pace to number of activities per day
-pace_map = {
-    "Relaxed: Take it slow, enjoy each moment": 2,
-    "Moderate: Balance of activities and rest": 3,
-    "Packed: See and do as much as possible": 5
-}
-
-# Get how many activities to return based on pace
-limit = pace_map.get(travel_pace, 3)
-
-# Get category IDs matching user's selected activities
-# If no match found, default to landmarks (16000)
-categories = ",".join([
-    category_map.get(a, "16000") for a in activities
-])
-    
-# Call Foursquare API
-response = requests.get(
-    "https://api.foursquare.com/v3/places/search",
-    headers={"Authorization": FOURSQUARE_API_key},
-    params={
-          "near": city,           # destination city
-          "categories": categories,
-          "limit": limit,         # number of results based on pace
-          "sort": "RATING"        # sort by highest rated first
+    # Map questionnaire answers to Foursquare category IDs
+    category_map = {
+        "City Tours": "16000",
+        "Nature Hikes": "16032",
+        "Historical Sites": "16026",
+        "Cultural Experiences (Museums, Local Events)": "10027",
+        "Food & Drink Experiences (Cooking Classes, Wine Tasting)": "13000",
+        "Relaxation (Spas, Beach Days)": "18000",
+        "Adventure Activities (Ziplining, Rafting)": "16032",
+        "Nightlife (Bars, Clubs)": "10032",
+        "Shopping": "17000",
+        "Wildlife Encounters": "16034"
     }
-)
-    
-if response.status_code == 200:
-    data = response.json()
-    results = []
-    for place in data["results"]:
-        results.append({
-            "name": place["name"],
-            "category": place["categories"][0]["name"] if place["categories"] else "Attraction",
-            "address": place["location"].get("formatted_address", "Address unavailable")
-        })
-    return results
-else:
-    return None
+
+    # Map travel pace to number of activities per day
+    pace_map = {
+        "Relaxed: Take it slow, enjoy each moment": 2,
+        "Moderate: Balance of activities and rest": 3,
+        "Packed: See and do as much as possible": 5
+    }
+
+    # Get how many activities to return based on pace
+    limit = pace_map.get(travel_pace, 3)
+
+    # Get category IDs matching user's selected activities
+    categories = ",".join([
+        category_map.get(a, "16000") for a in activities
+    ])
+
+    # Call Foursquare API
+    response = requests.get(
+        "https://api.foursquare.com/v3/places/search",
+        headers={"Authorization": FOURSQUARE_API_key},
+        params={
+            "near": city,
+            "categories": categories,
+            "limit": limit,
+            "sort": "RATING"
+        }
+    )
+
+    if response.status_code == 200:
+        data = response.json()
+        results = []
+        for place in data["results"]:
+            results.append({
+                "name": place["name"],
+                "category": place["categories"][0]["name"] if place["categories"] else "Attraction",
+                "address": place["location"].get("formatted_address", "Address unavailable")
+            })
+        return results
+    else:
+        return None
 
 
   
