@@ -59,29 +59,30 @@ def get_activities(city, activities, travel_pace):
     ])
 
     # Call Foursquare API
-    response = requests.get(
-        "https://api.foursquare.com/v3/places/search",
-        headers={"Authorization": FOURSQUARE_API_key},
-        params={
-            "near": city,
-            "categories": categories,
-            "limit": limit,
-            "sort": "RATING"
-        }
-    )
+    try:
+        response = requests.get(
+            "https://api.foursquare.com/v3/places/search",
+            headers={"Authorization": FOURSQUARE_API_key},
+            params={
+                "near": city,
+                "categories": categories,
+                "limit": limit,
+                "sort": "RELEVANCE"
+            }
+        )
 
-    if response.status_code == 200:
-        data = response.json()
-        results = []
-        for place in data["results"]:
-            results.append({
-                "name": place["name"],
-                "category": place["categories"][0]["name"] if place["categories"] else "Attraction",
-                "address": place["location"].get("formatted_address", "Address unavailable")
-            })
-        return results
-    else:
+        if response.status_code == 200:
+            data = response.json()
+            results = []
+            for place in data["results"]:
+                results.append({
+                    "name": place["name"],
+                    "category": place["categories"][0]["name"] if place["categories"] else "Attraction",
+                    "address": place["location"].get("formatted_address", "Address unavailable")
+                })
+            return results
+        else:
+            return None
+    except Exception:
         return None
-
-
   
