@@ -3,6 +3,38 @@ from API import get_weather
 
 st.set_page_config(page_title="SmartTravel - Results", page_icon="🎯")
 
+# Design: AI-generated
+st.markdown("""
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+html, body, [data-testid="stAppViewContainer"] {
+    background: linear-gradient(135deg, #1a0030 0%, #2d0057 40%, #0d001a 100%) !important;
+    font-family: 'DM Sans', sans-serif;
+    color: #ffffff;
+}
+[data-testid="stHeader"] { background: transparent !important; }
+
+h1, h2, h3 { font-family: 'Playfair Display', serif !important; }
+
+.stButton > button {
+    background: linear-gradient(135deg, #6a0dad, #8a2be2) !important;
+    color: white !important; border: none !important;
+    border-radius: 50px !important; padding: 0.6rem 2rem !important;
+    font-weight: 600 !important; transition: all 0.3s ease !important;
+    box-shadow: 0 4px 20px rgba(138,43,226,0.4) !important;
+}
+.stButton > button:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 30px rgba(138,43,226,0.6) !important;
+}
+
+[data-testid="stMetricValue"] { color: #ffffff !important; font-weight: 700 !important; }
+[data-testid="stMetricLabel"] { color: #c084fc !important; }
+</style>
+""", unsafe_allow_html=True)
+#end of Design
+
 if "recommendations" not in st.session_state:
     st.warning("Please complete the questionnaire first!")
     if st.button ("Go to Questionnaire"):
