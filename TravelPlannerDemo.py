@@ -36,7 +36,6 @@ h1, h2, h3 { font-family: 'Playfair Display', serif !important; }
 [data-testid="stMetricLabel"] { color: #c084fc !important; }
 </style>
 """, unsafe_allow_html=True)
-}
 
 #Notes: Majority of Markdown Code is AI generated; this formatting looks nicer,
 # however I'm not sure if we're allowed to use the complicated ones
