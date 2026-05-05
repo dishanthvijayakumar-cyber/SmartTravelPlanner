@@ -49,11 +49,37 @@ st.title("🎯 Your Top 10 Destinations")
 chart_data = {r["place"]: r["score"] for r in st.session_state.recommendations}
 st.bar_chart(chart_data)
 
-for rank, destination in enumerate(st.session_state.recommendations, 1):
-    st.subheader(f"#{rank} - {destination['place']} - {destination['score']}/100")
+for rank, destination in enumerate(st.session_state.recommendations, 1): (Design AI-generated)
+    score = destination["score"]
+    score_color = "#34d399" if score >= 70 else "#f59e0b" if score >= 40 else "#f87171"
+
+    st.markdown(f"""
+    <div style="background:rgba(255,255,255,0.05); border:1px solid rgba(192,132,252,0.2);
+         border-radius:20px; padding:28px; margin-bottom:8px;">
+        <div style="display:flex; align-items:center; gap:16px; margin-bottom:16px; flex-wrap:wrap;">
+            <span style="font-family:'Playfair Display',serif; font-size:2rem;
+                  font-weight:900; color:rgba(255,255,255,0.2);">#{rank}</span>
+            <div style="flex:1;">
+                <h3 style="font-family:'Playfair Display',serif; font-size:1.5rem;
+                      color:#ffffff; margin:0;">{destination['place']}</h3>
+                <p style="color:#c084fc; margin:0; font-size:0.9rem;">
+                    🌍 {destination['country']} &nbsp;·&nbsp; 🌤️ {destination['climate']}
+                </p>
+            </div>
+            <div style="background:rgba(255,255,255,0.08); border:1px solid {score_color}50;
+                  border-radius:16px; padding:10px 20px; text-align:center;">
+                <div style="font-family:'Playfair Display',serif; font-size:1.6rem;
+                      font-weight:900; color:{score_color};">{score}</div>
+                <div style="font-size:0.7rem; color:#9ca3af; letter-spacing:1px;">/ 100</div>
+            </div>
+        </div>
+        <p style="color:#d8b4fe; font-size:0.9rem; margin:0; font-weight:300;">
+            {destination['description_sentence']}
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+
     st.image(f"https://en.wikipedia.org/wiki/Special:FilePath/{destination['place']}.jpg", width=300)
-    st.write(f"🌍 {destination['country']} | 🌤️ {destination['climate']}")
-    st.write(f"📖 {destination['description_sentence']}")
     weather = get_weather(destination["place"])
     if weather: 
         col1, col2, col3, col4 = st.columns(4)
