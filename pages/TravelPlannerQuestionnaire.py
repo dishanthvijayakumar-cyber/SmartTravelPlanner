@@ -152,28 +152,29 @@ activities = st.multiselect("What activities do you enjoy most while traveling?"
 for activity in activities:
     st.write(f"- {activity}")
 
-#Slider Travel Duration (AI-generated)
+#Slider Travel Duration
 st.subheader("8. How long would you stay?")
+
+duration_options = [1, 2, 3, 4, 5, 6, 7, 10, 14, 21, 30, 45, 60, 90, 120, 180, 270, 365]
+labels = ["1d","2d","3d","4d","5d","6d","1w","10d","2w","3w","1m","45d","2m","3m","4m","6m","9m","1y"]
+
 if "preferences" in st.session_state and "travel_duration" in st.session_state.preferences:
-    default_travel_duration = st.session_state.preferences["travel_duration"]
+    saved = st.session_state.preferences["travel_duration"]
+    default_index = min(range(len(duration_options)), key=lambda i: abs(duration_options[i] - saved))
 else:
-    default_travel_duration = 7
+    default_index = 6  # 1 week by default
 
-# Slider 
-travel_duration = st.slider("Number of days", min_value=1, max_value=365, step=1, value=default_travel_duration, key="travel_duration")
+selected_index = st.select_slider(
+    "Number of days",
+    options=list(range(len(duration_options))),
+    value=default_index,
+    format_func=lambda i: labels[i],
+    key="travel_duration_index"
+)
 
-# Milestone markers
-milestones = [(1,"1d"),(7,"1w"),(14,"2w"),(30,"1m"),(90,"3m"),(180,"6m"),(365,"1y")]
-marker_html = "<div style='display:flex; justify-content:space-between; margin-top:6px;'>"
-for days, label in milestones:
-    active = abs(travel_duration - days) <= 3
-    color = "#f59e0b" if active else "#6b7280"
-    weight = "700" if active else "400"
-    marker_html += f"<span style='font-size:0.7rem; color:{color}; font-weight:{weight};'>{label}</span>"
-marker_html += "</div>"
-st.markdown(marker_html, unsafe_allow_html=True)
+travel_duration = duration_options[selected_index]
 
-# Smart duration badge
+# Badge
 if travel_duration < 7:
     dur_label = f"{travel_duration} days"
 elif travel_duration < 30:
@@ -185,7 +186,7 @@ elif travel_duration < 365:
 else:
     dur_label = "1 year"
 
-st.markdown(f"""
+st.markdown(f""" #Design: AI-generated
 <div style="margin-top:12px; display:flex; align-items:center; gap:12px;">
     <span style="font-family:'Playfair Display',serif; font-size:1.8rem; font-weight:900; color:#ffffff;">{travel_duration}</span>
     <span style="color:#9ca3af; font-size:0.9rem;">days —</span>
@@ -194,7 +195,6 @@ st.markdown(f"""
           border:1px solid rgba(245,158,11,0.35);">{dur_label}</span>
 </div>
 """, unsafe_allow_html=True)
-
 
 #add spacing between buttons and stats with 150px distance (AI generated)
 st.markdown("<div style='margin-top: 50px;'></div>", unsafe_allow_html=True)
