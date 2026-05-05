@@ -186,7 +186,8 @@ elif travel_duration < 365:
 else:
     dur_label = "1 year"
 
-st.markdown(f""" #Design: AI-generated
+#Design: AI-generated
+st.markdown(f""" 
 <div style="margin-top:12px; display:flex; align-items:center; gap:12px;">
     <span style="font-family:'Playfair Display',serif; font-size:1.8rem; font-weight:900; color:#ffffff;">{travel_duration}</span>
     <span style="color:#9ca3af; font-size:0.9rem;">days —</span>
