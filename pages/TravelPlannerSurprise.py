@@ -49,8 +49,21 @@ if "selected_destination" not in st.session_state:
 
 destination = st.session_state.selected_destination
 
-st.markdown("<h2 style='color:#8a2be2;'>🎲 Your Surprise Destination!</h2>", unsafe_allow_html=True)
-st.title(f"✈️ {destination['place']}, {destination['country']}")
+#Title AI-generated
+st.markdown(f"""
+<div style="text-align:center; padding:30px 20px 20px;">
+    <p style="font-size:0.75rem; letter-spacing:4px; text-transform:uppercase; color:#c084fc; margin-bottom:10px;">
+        ✦ Your Surprise ✦
+    </p>
+    <div style="font-size:3.5rem; margin-bottom:10px;">🎲</div>
+    <h1 style="font-family:'Playfair Display',serif; font-size:2.8rem; font-weight:900;
+          background:linear-gradient(90deg,#c084fc,#f59e0b);
+          -webkit-background-clip:text; -webkit-text-fill-color:transparent; margin:0 0 8px;">
+        {destination['place']}
+    </h1>
+    <p style="color:#d8b4fe; font-size:1.1rem; font-weight:300;">✈️ {destination['country']}</p>
+</div>
+""", unsafe_allow_html=True)
 
 st.image(
     f"https://en.wikipedia.org/wiki/Special:FilePath/{destination['place']}.jpg",
