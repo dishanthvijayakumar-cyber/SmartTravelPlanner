@@ -133,14 +133,61 @@ activities = st.multiselect("What activities do you enjoy most while traveling?"
 for activity in activities:
     st.write(f"- {activity}")
 
-#Slider Travel Duration
+#Slider Travel Duration (AI-generated for the improved design)
 st.subheader("8. How long would you stay?")
-if "preferences" in st.session_state and "travel_duration" in st.session_state.preferences:  # check if travel duration was previously saved in preferences
-    default_travel_duration = st.session_state.preferences["travel_duration"]  # use the saved duration from preferences
+if "preferences" in st.session_state and "travel_duration" in st.session_state.preferences:
+    default_travel_duration = st.session_state.preferences["travel_duration"]
 else:
-    default_travel_duration = 20  # otherwise use the existing default duration
-travel_duration = st.slider("Days", min_value=0, max_value=365, step=1, value=default_travel_duration, key="travel_duration")  # restore saved duration or existing default
-st.write(f"Your stay would last: {travel_duration} days")
+    default_travel_duration = 7
+
+# Quick-select preset tiles
+st.markdown("<p style='color:#c084fc; font-size:0.85rem; margin-bottom:10px;'>Quick select — or use the slider below</p>", unsafe_allow_html=True)
+presets = [("Weekend", 2), ("1 Week", 7), ("2 Weeks", 14), ("1 Month", 30), ("Long Term", 90)]
+preset_cols = st.columns(len(presets))
+for i, (label, days) in enumerate(presets):
+    with preset_cols[i]:
+        if st.button(f"{label}\n{days}d", key=f"preset_{days}", use_container_width=True):
+            st.session_state["_duration_value"] = days
+
+# Slider
+slider_val = st.session_state.get("_duration_value", default_travel_duration)
+travel_duration = st.slider("Or set a custom number of days", min_value=1, max_value=365, step=1, value=slider_val, key="travel_duration")
+if "_duration_value" in st.session_state:
+    del st.session_state["_duration_value"]
+
+# Milestone markers
+milestones = [(1,"1d"),(7,"1w"),(14,"2w"),(30,"1m"),(90,"3m"),(180,"6m"),(365,"1y")]
+marker_html = "<div style='display:flex; justify-content:space-between; margin-top:6px;'>"
+for days, label in milestones:
+    active = abs(travel_duration - days) <= 3
+    color = "#f59e0b" if active else "#6b7280"
+    weight = "700" if active else "400"
+    marker_html += f"<span style='font-size:0.7rem; color:{color}; font-weight:{weight};'>{label}</span>"
+marker_html += "</div>"
+st.markdown(marker_html, unsafe_allow_html=True)
+
+# Smart duration badge
+if travel_duration < 7:
+    dur_label = f"{travel_duration} days"
+elif travel_duration < 30:
+    weeks = round(travel_duration / 7, 1)
+    dur_label = f"{weeks} weeks"
+elif travel_duration < 365:
+    months = round(travel_duration / 30, 1)
+    dur_label = f"{months} months"
+else:
+    dur_label = "1 year"
+
+st.markdown(f"""
+<div style="margin-top:12px; display:flex; align-items:center; gap:12px;">
+    <span style="font-family:'Playfair Display',serif; font-size:1.8rem; font-weight:900; color:#ffffff;">{travel_duration}</span>
+    <span style="color:#9ca3af; font-size:0.9rem;">days —</span>
+    <span style="background:rgba(245,158,11,0.15); color:#f59e0b; padding:4px 14px;
+          border-radius:20px; font-size:0.85rem; font-weight:600;
+          border:1px solid rgba(245,158,11,0.35);">{dur_label}</span>
+</div>
+""", unsafe_allow_html=True)
+#end of Slider Travel Duration
 
 
 #add spacing between buttons and stats with 150px distance (AI generated)
