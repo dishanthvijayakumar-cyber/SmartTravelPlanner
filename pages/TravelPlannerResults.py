@@ -46,8 +46,16 @@ if st.button("Return Home", icon="🏠"):
 
 st.title("🎯 Your Top 10 Destinations")
 
-chart_data = {r["place"]: r["score"] for r in st.session_state.recommendations}
-st.bar_chart(chart_data)
+import pandas as pd
+
+sorted_recs = sorted(st.session_state.recommendations, key=lambda x: x["score"], reverse=True)
+
+df = pd.DataFrame({
+    "Destination": [r["place"] for r in sorted_recs],
+    "Score": [r["score"] for r in sorted_recs]
+}).set_index("Destination")
+
+st.bar_chart(df, color="#8a2be2") #Design: AI-generated 
 
 #(Design AI-generated)
 for rank, destination in enumerate(st.session_state.recommendations, 1):
