@@ -77,18 +77,25 @@ with col2:
 #add spacing between buttons and stats with 150px distance (AI generated)
 st.markdown("<div style='margin-top: 150px;'></div>", unsafe_allow_html=True)
 
-#Website statistics
-col1, col2, col3 = st.columns(3) #makes three columns for stats
-with col1:
-    st.title("🌍")
-    st.markdown("<h3 style='color:#8a2be2;'> 500+ Destinations</h3>", unsafe_allow_html=True) #adds purple stat with icon
-with col2:
-    st.title("🔥")
-    st.markdown("<h3 style='color:#8a2be2;'>98% Match Accuracy</h3>", unsafe_allow_html=True) #adds purple stat with icon
-with col3:
-    st.title("⭐")
-    st.markdown("<h3 style='color:#8a2be2;'>50k+ Happy Travelers</h3>", unsafe_allow_html=True) #adds purple stat with icon
-
+#Website statistics (AI-generated)
+st.markdown("""
+<div style="display:flex; justify-content:center; gap:60px; flex-wrap:wrap;
+     padding:30px 20px; background:rgba(255,255,255,0.05); border-radius:20px;
+     border:1px solid rgba(192,132,252,0.2); max-width:800px; margin:0 auto;">
+    <div style="text-align:center;">
+        <div style="font-family:'Playfair Display',serif; font-size:2.2rem; font-weight:900; color:#f59e0b;">500+</div>
+        <div style="font-size:0.75rem; letter-spacing:2px; text-transform:uppercase; color:#c084fc; margin-top:4px;">Destinations</div>
+    </div>
+    <div style="text-align:center;">
+        <div style="font-family:'Playfair Display',serif; font-size:2.2rem; font-weight:900; color:#f59e0b;">98%</div>
+        <div style="font-size:0.75rem; letter-spacing:2px; text-transform:uppercase; color:#c084fc; margin-top:4px;">Match Accuracy</div>
+    </div>
+    <div style="text-align:center;">
+        <div style="font-family:'Playfair Display',serif; font-size:2.2rem; font-weight:900; color:#f59e0b;">50k+</div>
+        <div style="font-size:0.75rem; letter-spacing:2px; text-transform:uppercase; color:#c084fc; margin-top:4px;">Happy Travelers</div>
+    </div>
+</div>
+""", unsafe_allow_html=True)
 
 #add spacing with 400px distance (AI generated)
 st.markdown("<div style='margin-top: 400px;'></div>", unsafe_allow_html=True)
