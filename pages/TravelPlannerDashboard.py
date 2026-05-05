@@ -111,7 +111,7 @@ for i, col in enumerate(day_cols, 1):
 selected_day = st.session_state.selected_day # Gets the selected day from session state
 st.subheader(f"Day {selected_day} schedule")
 # Fetch activities based on user preferences and selected destination
-activities = st.session_state.preferences.get("activities", [])
+activities_prefs = st.session_state.preferences.get("activities", []) if "preferences" in st.session_state else []
 travel_pace = st.session_state.preferences.get("travel_pace", "Moderate: Balance of activities and rest")
 
 all_activities, per_day = get_activities(destination["place"], activities_prefs, travel_pace) or ([], 3)
