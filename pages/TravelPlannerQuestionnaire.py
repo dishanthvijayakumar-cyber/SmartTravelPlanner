@@ -29,6 +29,25 @@ h1, h2, h3 { font-family: 'Playfair Display', serif !important; }
 
 [data-testid="stMetricValue"] { color: #ffffff !important; font-weight: 700 !important; }
 [data-testid="stMetricLabel"] { color: #c084fc !important; }
+
+/* Input & selectbox text */
+[data-testid="stSelectbox"] label,
+[data-testid="stMultiSelect"] label,
+[data-testid="stSlider"] label {
+    color: #ffffff !important;
+    font-size: 0.95rem !important;
+    font-weight: 500 !important;
+}
+
+/* Selectbox dropdown text */
+[data-testid="stSelectbox"] div[data-baseweb="select"] span {
+    color: #ffffff !important;
+}
+
+/* Multiselect text */
+[data-testid="stMultiSelect"] div[data-baseweb="select"] span {
+    color: #ffffff !important;
+}
 </style>
 """, unsafe_allow_html=True)
 
