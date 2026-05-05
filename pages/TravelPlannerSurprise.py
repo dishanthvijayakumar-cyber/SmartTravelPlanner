@@ -82,21 +82,25 @@ st.markdown("---")
 st.subheader("About this destination")
 st.write(destination["description_sentence"])
 
+tags = []
 if destination.get("best_for"):
-    st.write(f"**Best for:** {destination['best_for']}")
-
+    tags.append(("🏆 Best for", destination["best_for"]))
 if destination.get("activities"):
-    st.write(f"**Activities:** {', '.join(destination['activities'])}")
-
+    tags.append(("🎯 Activities", ", ".join(destination["activities"])))
 if destination.get("interests"):
-    st.write(f"**Interests:** {', '.join(destination['interests'])}")
-
+    tags.append(("💡 Interests", ", ".join(destination["interests"])))
 if destination.get("styles"):
-    st.write(f"**Travel styles:** {', '.join(destination['styles'])}")
-
+    tags.append(("✈️ Travel styles", ", ".join(destination["styles"])))
 if destination.get("accommodation"):
-    st.write(f"**Accommodation:** {', '.join(destination['accommodation'])}")
+    tags.append(("🏨 Accommodation", ", ".join(destination["accommodation"])))
 
+for label, value in tags:
+    st.markdown(f""" #Design: AI-generated
+    <div style="display:flex; gap:12px; margin-bottom:10px; align-items:flex-start;">
+        <span style="color:#f59e0b; font-size:0.85rem; font-weight:600; min-width:130px;">{label}</span>
+        <span style="color:#d8b4fe; font-size:0.9rem; font-weight:300;">{value}</span>
+    </div>
+    """, unsafe_allow_html=True)
 st.markdown("---")
 
 col1, col2 = st.columns(2)
