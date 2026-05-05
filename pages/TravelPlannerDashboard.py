@@ -114,7 +114,10 @@ st.subheader(f"Day {selected_day} schedule")
 activities = st.session_state.preferences.get("activities", [])
 travel_pace = st.session_state.preferences.get("travel_pace", "Moderate: Balance of activities and rest")
 
-recommended = get_activities(destination["place"], activities, travel_pace)
+all_activities, per_day = get_activities(destination["place"], activities_prefs, travel_pace) or ([], 3)
+
+offset = (selected_day - 1) * per_day
+recommended = all_activities[offset:offset + per_day] if all_activities else []
 
 if recommended:
     for i, activity in enumerate(recommended, 1):
