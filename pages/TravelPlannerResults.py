@@ -47,15 +47,23 @@ if st.button("Return Home", icon="🏠"):
 st.title("🎯 Your Top 10 Destinations")
 
 #Chart top 10 destinations
-import pandas as pd
+import plotly.express as px
 
 sorted_recs = sorted(st.session_state.recommendations, key=lambda x: x["score"], reverse=True)
 
-chart_data = pd.DataFrame({
-    "Score": [r["score"] for r in sorted_recs]
-}, index=[r["place"] for r in sorted_recs])
+fig = px.bar(
+    x=[r["place"] for r in sorted_recs],
+    y=[r["score"] for r in sorted_recs],
+    color_discrete_sequence=["#8a2be2"]
+)
+fig.update_layout(
+    plot_bgcolor="rgba(0,0,0,0)",
+    paper_bgcolor="rgba(0,0,0,0)",
+    font_color="#ffffff",
+    xaxis_title="", yaxis_title="Score",
+)
+st.plotly_chart(fig, use_container_width=True)
 
-st.bar_chart(chart_data, color="#8a2be2") #Design: AI-generated 
 
 #(Design AI-generated)
 for rank, destination in enumerate(st.session_state.recommendations, 1):
