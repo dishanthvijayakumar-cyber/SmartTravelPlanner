@@ -92,8 +92,10 @@ for rank, destination in enumerate(st.session_state.recommendations, 1): (Design
         with col4:
             st.metric("Conditions", weather["description"].capitalize())
 
-    if st.button(f"Plan this trip", key=f"btn_{rank}"):
-        st.session_state.selected_destination = destination
-        st.switch_page("pages/TravelPlannerDashboard.py")
+    col_l, col_btn, col_r = st.columns([2, 2, 2])
+    with col_btn:
+        if st.button(f"🗺️  Plan this trip", key=f"btn_{rank}", use_container_width=True):
+            st.session_state.selected_destination = destination
+            st.switch_page("pages/TravelPlannerDashboard.py")
     
     st.markdown("---")
