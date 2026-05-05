@@ -152,27 +152,15 @@ activities = st.multiselect("What activities do you enjoy most while traveling?"
 for activity in activities:
     st.write(f"- {activity}")
 
-#Slider Travel Duration (AI-generated for the improved design)
+#Slider Travel Duration (AI-generated)
 st.subheader("8. How long would you stay?")
 if "preferences" in st.session_state and "travel_duration" in st.session_state.preferences:
     default_travel_duration = st.session_state.preferences["travel_duration"]
 else:
     default_travel_duration = 7
 
-# Quick-select preset tiles
-st.markdown("<p style='color:#c084fc; font-size:0.85rem; margin-bottom:10px;'>Quick select — or use the slider below</p>", unsafe_allow_html=True)
-presets = [("Weekend", 2), ("1 Week", 7), ("2 Weeks", 14), ("1 Month", 30), ("Long Term", 90)]
-preset_cols = st.columns(len(presets))
-for i, (label, days) in enumerate(presets):
-    with preset_cols[i]:
-        if st.button(f"{label}\n{days}d", key=f"preset_{days}", use_container_width=True):
-            st.session_state["_duration_value"] = days
-
-# Slider
-slider_val = st.session_state.get("_duration_value", default_travel_duration)
-travel_duration = st.slider("Or set a custom number of days", min_value=1, max_value=365, step=1, value=slider_val, key="travel_duration")
-if "_duration_value" in st.session_state:
-    del st.session_state["_duration_value"]
+# Slider 
+travel_duration = st.slider("Number of days", min_value=1, max_value=365, step=1, value=default_travel_duration, key="travel_duration")
 
 # Milestone markers
 milestones = [(1,"1d"),(7,"1w"),(14,"2w"),(30,"1m"),(90,"3m"),(180,"6m"),(365,"1y")]
@@ -206,7 +194,6 @@ st.markdown(f"""
           border:1px solid rgba(245,158,11,0.35);">{dur_label}</span>
 </div>
 """, unsafe_allow_html=True)
-#end of Slider Travel Duration
 
 
 #add spacing between buttons and stats with 150px distance (AI generated)
