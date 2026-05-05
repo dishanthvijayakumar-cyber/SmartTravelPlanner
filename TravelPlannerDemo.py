@@ -80,7 +80,7 @@ st.markdown("""
      padding:30px 20px; background:rgba(255,255,255,0.05); border-radius:20px;
      border:1px solid rgba(192,132,252,0.2); max-width:800px; margin:0 auto;">
     <div style="text-align:center;">
-        <div style="font-family:'Playfair Display',serif; font-size:2.2rem; font-weight:900; color:#f59e0b;">500+</div>
+        <div style="font-family:'Playfair Display',serif; font-size:2.2rem; font-weight:900; color:#f59e0b;">250+</div>
         <div style="font-size:0.75rem; letter-spacing:2px; text-transform:uppercase; color:#c084fc; margin-top:4px;">Destinations</div>
     </div>
     <div style="text-align:center;">
