@@ -126,60 +126,34 @@ with col_c:
 #add spacing with 400px distance (AI generated)
 st.markdown("<div style='margin-top: 400px;'></div>", unsafe_allow_html=True)
 
-#Why Choose SmartTravel Section
-st.title("Why Choose SmartTravel?")
-st.subheader("Experience the future of travel planning with our Intelligent platform")
-col1, col2, col3 = st.columns(3)
-with col1: # Code AI generated: Formats the first column with a purple border, rounded corners, and an image icon. The column is centered and has a description below the title.
-    st.markdown("""
-        <div style='border: 2px solid #6a0dad; border-radius: 14px; padding: 18px; text-align: center; background: #f8f1ff; max-width: 360px; margin: 0 auto;'>
-            <img src='https://static.thenounproject.com/png/1568674-200.png' width='80' style='display:block; margin: 0 auto 12px;' />
-            <h3 style='color:#6a0dad; margin: 0 0 8px;'>Detailed Insights</h3>
-            <p style='color:#4c1d95; font-size: 12px; margin: 0;'>Explore activities, budget breakdowns, and weather data for every destination.</p>
+#Why Choose SmartTravel Section (Design AI-generated)
+st.markdown("""
+<div style="text-align:center; margin-bottom:40px;">
+    <h2 style="font-family:'Playfair Display',serif; font-size:2.2rem; color:#fff;">Why Choose SmartTravel?</h2>
+    <p style="color:#d8b4fe; font-weight:300; font-size:1rem;">The smarter way to plan unforgettable trips</p>
+</div>
+""", unsafe_allow_html=True)
+
+features = [
+    ("🔍", "Detailed Insights", "Explore activities, budget breakdowns, and live weather for every destination."),
+    ("✅", "Trusted Information", "Curated picks from verified travel experts and real travelers."),
+    ("⚡", "Instant Results", "Get personalised travel matches in seconds, not hours."),
+    ("🤖", "AI-Powered", "Smart suggestions based on your unique preferences and travel style."),
+    ("📊", "Match Scores", "See exactly how well each destination fits your interests."),
+    ("🗺️", "Easy Planning", "Build your perfect itinerary with a clean, intuitive dashboard."),
+]
+
+cols = st.columns(3)
+for i, (icon, title, desc) in enumerate(features):
+    with cols[i % 3]:
+        st.markdown(f"""
+        <div style="background:rgba(255,255,255,0.06); border:1px solid rgba(192,132,252,0.2);
+             border-radius:20px; padding:28px 22px; margin-bottom:20px; backdrop-filter:blur(8px);">
+            <div style="font-size:2rem; margin-bottom:14px;">{icon}</div>
+            <h4 style="font-family:'Playfair Display',serif; font-size:1.05rem; color:#fff; margin:0 0 10px;">{title}</h4>
+            <p style="color:#c084fc; font-size:0.85rem; margin:0; font-weight:300; line-height:1.6;">{desc}</p>
         </div>
-    """, unsafe_allow_html=True)
-with col2: # Code AI generated: Formats the second column with a purple border, rounded corners, and an image icon. The column is centered and has a description below the title.
-    st.markdown("""
-        <div style='border: 2px solid #6a0dad; border-radius: 14px; padding: 18px; text-align: center; background: #f8f1ff; max-width: 360px; margin: 0 auto;'>
-            <img src='https://cdn-icons-png.flaticon.com/512/861/861377.png' width='80' style='display:block; margin: 0 auto 12px;' />
-            <h3 style='color:#6a0dad; margin: 0 0 8px;'>Trusted Information</h3>
-            <p style='color:#4c1d95; font-size: 12px; margin: 0;'>Curated recommendations from verified travel experts and real travelers.</p>
-        </div>
-    """, unsafe_allow_html=True)
-with col3: # Code AI generated: Formats the third column with a purple border, rounded corners, and an image icon. The column is centered and has a description below the title.    
-    st.markdown("""
-        <div style='border: 2px solid #6a0dad; border-radius: 14px; padding: 18px; text-align: center; background: #f8f1ff; max-width: 360px; margin: 0 auto;'>
-            <img src='https://cdn-icons-png.flaticon.com/512/657/657104.png' width='80' style='display:block; margin: 0 auto 12px;' />
-            <h3 style='color:#6a0dad; margin: 0 0 8px;'>Instant Results</h3>
-            <p style='color:#4c1d95; font-size: 12px; margin: 0;'>Get your personalized travel recommendations in seconds, not hours.</p>
-        </div>
-    """, unsafe_allow_html=True) 
-st.markdown("<div style='margin-top: 20px;'></div>", unsafe_allow_html=True) #spacing between rows (AI generated)
-col1, col2, col3 = st.columns(3)
-with col1: # Code AI generated: Formats the first column with a purple border, rounded corners, and an image icon. The column is centered and has a description below the title.
-    st.markdown("""
-        <div style='border: 2px solid #6a0dad; border-radius: 14px; padding: 18px; text-align: center; background: #f8f1ff; max-width: 360px; margin: 0 auto;'>
-            <img src='https://png.pngtree.com/png-clipart/20240725/original/pngtree-yellow-star-scribble-png-image_15635162.png' width='80' style='display:block; margin: 0 auto 12px;' />
-            <h3 style='color:#6a0dad; margin: 0 0 8px;'>AI-Powered Recommendations</h3>
-            <p style='color:#4c1d95; font-size: 12px; margin: 0;'>Get personalized destination suggestions based on your unique preferences and travel style.</p>
-        </div>
-    """, unsafe_allow_html=True)
-with col2: # Code AI generated: Formats the second column with a purple border, rounded corners, and an image icon. The column is centered and has a description below the title.
-    st.markdown("""
-        <div style='border: 2px solid #6a0dad; border-radius: 14px; padding: 18px; text-align: center; background: #f8f1ff; max-width: 360px; margin: 0 auto;'>
-            <img src='https://endlessicons.com/wp-content/uploads/2012/10/arrow-up-icon.png' width='80' style='display:block; margin: 0 auto 12px;' />
-            <h3 style='color:#6a0dad; margin: 0 0 8px;'>Smart Match Scores</h3>
-            <p style='color:#4c1d95; font-size: 12px; margin: 0;'>See how well each destination aligns with your interests with our intelligent scoring system.</p>
-        </div>
-    """, unsafe_allow_html=True)
-with col3: # Code AI generated: Formats the third column with a purple border, rounded corners, and an image icon. The column is centered and has a description below the title.    
-    st.markdown("""
-        <div style='border: 2px solid #6a0dad; border-radius: 14px; padding: 18px; text-align: center; background: #f8f1ff; max-width: 360px; margin: 0 auto;'>
-            <img src='https://cdn-icons-png.flaticon.com/512/554/554975.png' width='80' style='display:block; margin: 0 auto 12px;' />
-            <h3 style='color:#6a0dad; margin: 0 0 8px;'>Drag & Drop Planning</h3>
-            <p style='color:#4c1d95; font-size: 12px; margin: 0;'>Build your perfect itinerary with our intuitive drag-and-drop trip planner.</p>
-        </div>
-    """, unsafe_allow_html=True)
+        """, unsafe_allow_html=True)
 
 #spacing (AI generated)
 st.markdown("<div style='margin-top: 400px;'></div>", unsafe_allow_html=True) 
