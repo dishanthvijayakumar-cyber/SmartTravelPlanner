@@ -71,8 +71,8 @@ with col1:
 with col2:
     if st.button("View Dashboard", icon="📊"): #places button in second column, with icon
         st.switch_page("pages/TravelPlannerDashboard.py") 
-#add spacing between buttons and stats with 150px distance (AI generated)
-st.markdown("<div style='margin-top: 150px;'></div>", unsafe_allow_html=True)
+#add spacing between buttons and stats with 40px distance (AI generated)
+st.markdown("<div style='margin-top: 40px;'></div>", unsafe_allow_html=True)
 
 #Website statistics (AI-generated)
 st.markdown("""
@@ -94,8 +94,8 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-#add spacing with 400px distance (AI generated)
-st.markdown("<div style='margin-top: 400px;'></div>", unsafe_allow_html=True)
+#add spacing with 60px distance (AI generated)
+st.markdown("<div style='margin-top: 60px;'></div>", unsafe_allow_html=True)
 
 #Discover Your Way Section
 st.title("Discover Your Way")
@@ -120,8 +120,8 @@ with col_c:
         st.switch_page("pages/TravelPlannerSurprise.py")
 
 
-#add spacing with 400px distance (AI generated)
-st.markdown("<div style='margin-top: 400px;'></div>", unsafe_allow_html=True)
+#add spacing with 60px distance (AI generated)
+st.markdown("<div style='margin-top: 60px;'></div>", unsafe_allow_html=True)
 
 #Why Choose SmartTravel Section (Design AI-generated)
 st.markdown("""
@@ -153,7 +153,7 @@ for i, (icon, title, desc) in enumerate(features):
         """, unsafe_allow_html=True)
 
 #spacing (AI generated)
-st.markdown("<div style='margin-top: 400px;'></div>", unsafe_allow_html=True) 
+st.markdown("<div style='margin-top: 60px;'></div>", unsafe_allow_html=True) 
 col1, col2, col3 = st.columns(3)
 
 #Ready to explore section (Design AI-generated)
