@@ -56,6 +56,8 @@ h1, h2, h3 { font-family: 'Playfair Display', serif !important; }
 import sys
 sys.path.append('..')
 from recommender import get_recommendations
+from ml_streamlit_integration import show_ml_travel_match_section
+
 
 #TravelPlanner Questionnaire
 #Everything Here is just for testing purposes
@@ -214,3 +216,5 @@ if st.button("View Results✔️"):
     }
     st.session_state.recommendations = get_recommendations(st.session_state.preferences)  # generate recommendation list from saved preferences
     st.switch_page("pages/TravelPlannerResults.py")  # navigate to the results page after saving preferences
+
+show_ml_travel_match_section()
