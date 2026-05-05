@@ -51,7 +51,8 @@ def get_activities(city, activities, travel_pace):
     }
 
     # Get how many activities to return based on pace
-    limit = pace_map.get(travel_pace, 3)
+    activities_per_day = pace_map.get(travel_pace, 3)
+    limit = activities_per_day * 7
 
     # Get category IDs matching user's selected activities
     categories = ",".join([
@@ -80,9 +81,9 @@ def get_activities(city, activities, travel_pace):
                     "category": place["categories"][0]["name"] if place["categories"] else "Attraction",
                     "address": place["location"].get("formatted_address", "Address unavailable")
                 })
-            return results
+            return results, activities_per_day
         else:
             return None
     except Exception:
-        return None
+        return None, 3
   
