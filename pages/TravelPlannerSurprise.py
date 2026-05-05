@@ -94,8 +94,9 @@ if destination.get("styles"):
 if destination.get("accommodation"):
     tags.append(("🏨 Accommodation", ", ".join(destination["accommodation"])))
 
+#Design: AI-generated
 for label, value in tags:
-    st.markdown(f""" #Design: AI-generated
+    st.markdown(f"""
     <div style="display:flex; gap:12px; margin-bottom:10px; align-items:flex-start;">
         <span style="color:#f59e0b; font-size:0.85rem; font-weight:600; min-width:130px;">{label}</span>
         <span style="color:#d8b4fe; font-size:0.9rem; font-weight:300;">{value}</span>
