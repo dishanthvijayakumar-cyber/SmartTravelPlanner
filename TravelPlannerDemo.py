@@ -104,18 +104,23 @@ st.markdown("<div style='margin-top: 400px;'></div>", unsafe_allow_html=True)
 st.title("Discover Your Way")
 st.subheader("Not sure where to start? Try an alternative way to find your perfect destination:")
 
-col1, col2, col3 = st.columns([1,2,1]) #makes three columns for features, with middle column being larger
-with col2: 
-    with st.container(border=True):
-        st.image("https://cdn-icons-png.flaticon.com/512/3656/3656900.png", width=80) #adds icon for "Surprise Me" feature
-        st.subheader("Surprise Me!")
-        st.write("Feeling adventurous? Let us surprise you with a random destination and discover something unexpected.")
-        if st.button("🎲 Surprise Me!", use_container_width=False):
-            destinations = get_destinations()
-            random_destination = random.choice(destinations)
-            st.session_state.selected_destination = random_destination
-            st.switch_page("pages/TravelPlannerSurprise.py")
-    
+#Surprise Me button (AI-generated design)
+col_l, col_c, col_r = st.columns([2, 2, 2])
+with col_c:
+    st.markdown("""
+    <div style="background:rgba(255,255,255,0.06); border:1px solid rgba(192,132,252,0.3);
+         border-radius:24px; padding:36px 28px; text-align:center; backdrop-filter:blur(12px);">
+        <div style="font-size:3rem; margin-bottom:16px;">🎲</div>
+        <h3 style="font-family:'Playfair Display',serif; color:#fff; margin:0 0 10px;">Surprise Me!</h3>
+        <p style="color:#c084fc; font-size:0.9rem; margin:0 0 24px; font-weight:300;">
+            Feeling adventurous? Discover something unexpected.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+    if st.button("🎲  Surprise Me!", use_container_width=True):
+        destinations = get_destinations()
+        st.session_state.selected_destination = random.choice(destinations)
+        st.switch_page("pages/TravelPlannerSurprise.py")
 
 
 #add spacing with 400px distance (AI generated)
