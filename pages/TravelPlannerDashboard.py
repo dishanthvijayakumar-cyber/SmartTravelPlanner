@@ -70,8 +70,10 @@ with col3:
     st.write(destination["country"])
 with col4:
     daily_budget = st.session_state.preferences.get("daily_budget", 0) if "preferences" in st.session_state else 0
-    st.subheader("Daily Budget:")
-    st.write(f"${daily_budget}")
+    total_budget = daily_budget * travel_duration
+    st.metric("Daily Budget", f"${daily_budget}")
+with col4:
+    st.metric("Trip Total Est.", f"${total_budget:,}")
 
 #Weather Section
 st.header("🌤️ Current Weather")
@@ -116,10 +118,26 @@ recommended = get_activities(destination["place"], activities, travel_pace)
 
 if recommended:
     for i, activity in enumerate(recommended, 1):
-        st.markdown(f"**{i}. {activity['name']}**")
-        st.write(f"📍 {activity['category']}")
-        st.write(f"🗺️ {activity['address']}")
-        st.markdown("---")
+        st.markdown(f""" #Design AI-generated
+        <div style="background:rgba(255,255,255,0.04); border:1px solid rgba(192,132,252,0.15);
+             border-radius:14px; padding:18px 20px; margin-bottom:12px;">
+            <div style="display:flex; gap:16px; align-items:flex-start;">
+                <div style="background:rgba(138,43,226,0.3); border-radius:10px;
+                      width:36px; height:36px; display:flex; align-items:center;
+                      justify-content:center; flex-shrink:0;
+                      font-family:'Playfair Display',serif; font-weight:900; color:#f59e0b;">
+                    {i}
+                </div>
+                <div>
+                    <div style="font-weight:600; color:#ffffff; font-size:1rem; margin-bottom:4px;">
+                        {activity['name']}
+                    </div>
+                    <div style="color:#c084fc; font-size:0.85rem;">📍 {activity['category']}</div>
+                    <div style="color:#9ca3af; font-size:0.82rem; margin-top:2px;">🗺️ {activity['address']}</div>
+                </div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
 else:
     st.warning("No activities found for this destination.")
 
