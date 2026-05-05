@@ -159,14 +159,20 @@ for i, (icon, title, desc) in enumerate(features):
 st.markdown("<div style='margin-top: 400px;'></div>", unsafe_allow_html=True) 
 col1, col2, col3 = st.columns(3)
 
-#Ready to explore section
+#Ready to explore section (Design AI-generated)
 st.markdown("""
-        <div style='border: 2px solid #6a0dad; border-radius: 14px; padding: 18px; text-align: center; background: #f8f1ff; max-width: 1000px; margin: 0 auto;'>
-            <h3 style='color:#6a0dad; margin: 0 0 8px;'>Ready to Explore?</h3>
-            <p style='color:#4c1d95; font-size: 12px; margin: 0;'>Answer a few quick questions and let us guide you to your perfect destination match in seconds.</p>
-        </div>
-    """, unsafe_allow_html=True)
-col1, col2, col3 = st.columns(3)
-with col2:
-    if st.button("Start Questionnaire"):
+<div style="background:linear-gradient(135deg, rgba(106,13,173,0.6), rgba(138,43,226,0.4));
+     border:1px solid rgba(192,132,252,0.3); border-radius:24px;
+     padding:50px 40px; text-align:center; backdrop-filter:blur(10px);">
+    <h2 style="font-family:'Playfair Display',serif; font-size:2rem; color:#fff; margin:0 0 12px;">
+        Ready to Explore?
+    </h2>
+    <p style="color:#d8b4fe; font-size:1rem; font-weight:300; margin:0 0 30px;">
+        Answer a few quick questions and find your perfect destination in seconds.
+    </p>
+</div>
+""", unsafe_allow_html=True)
+col_l, col_c, col_r = st.columns([3, 2, 3])
+with col_c:
+    if st.button("Start Questionnaire →", use_container_width=True):
         st.switch_page("pages/TravelPlannerQuestionnaire.py")
