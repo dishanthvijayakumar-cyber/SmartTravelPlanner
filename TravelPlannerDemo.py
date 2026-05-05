@@ -44,10 +44,27 @@ h1, h2, h3 { font-family: 'Playfair Display', serif !important; }
 # however I'm not sure if we're allowed to use the complicated ones
 # We can change back to the simpler version learned in class if needed
 
-#Page Title & Subheaders
-st.markdown("<h2 style='color:#8a2be2;'>✨ AI Powered Travel Planning ✨</h2>", unsafe_allow_html=True) #adds purple lvl 2 header
-st.title("Discover Your Perfect Destination with SmartTravel 🌍")
-st.subheader("Let us guide you to unforgettable adventures tailored specifically to your travel preferences and dreams.")
+#Page Title & Subheaders (AI-generated)
+st.markdown("""
+<div style="text-align:center; padding:60px 20px 20px;">
+    <p style="font-family:'DM Sans',sans-serif; font-size:0.8rem; letter-spacing:4px;
+       text-transform:uppercase; color:#c084fc; margin-bottom:14px;">
+        ✦ AI-Powered Travel Planning ✦
+    </p>
+    <h1 style="font-family:'Playfair Display',serif; font-size:clamp(2.4rem,6vw,4.5rem);
+       font-weight:900; line-height:1.1; color:#ffffff; margin:0 0 20px;">
+        Discover Your<br>
+        <span style="background:linear-gradient(90deg,#c084fc,#f59e0b);
+            -webkit-background-clip:text; -webkit-text-fill-color:transparent;">
+            Perfect Destination
+        </span>
+    </h1>
+    <p style="font-family:'DM Sans',sans-serif; font-size:1.1rem; color:#d8b4fe;
+       max-width:540px; margin:0 auto 40px; font-weight:300; line-height:1.7;">
+        Answer a few questions and let our smart engine match you with your ideal travel experience.
+    </p>
+</div>
+""", unsafe_allow_html=True)
 
 #Buttons to start journey -- no feature yet, just for show
 col1, col2 = st.columns(2) #makes two columns for buttons --> positions them next to eachother
