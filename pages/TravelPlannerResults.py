@@ -49,7 +49,8 @@ st.title("🎯 Your Top 10 Destinations")
 chart_data = {r["place"]: r["score"] for r in st.session_state.recommendations}
 st.bar_chart(chart_data)
 
-for rank, destination in enumerate(st.session_state.recommendations, 1): (Design AI-generated)
+#(Design AI-generated)
+for rank, destination in enumerate(st.session_state.recommendations, 1):
     score = destination["score"]
     score_color = "#34d399" if score >= 70 else "#f59e0b" if score >= 40 else "#f87171"
 
