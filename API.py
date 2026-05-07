@@ -26,7 +26,7 @@ def get_weather(city):
   else:
       return None #city not found or API error
 
-def get_activities(city, activities, travel_pace):
+def get_activities(city, activities, travel_pace, travel_duration=7):
     """Fetch recommended activities from Foursquare based on user preferences"""
 
     # Map questionnaire answers to Foursquare category IDs
@@ -51,7 +51,8 @@ def get_activities(city, activities, travel_pace):
     }
 
     # Get how many activities to return based on pace
-    limit = pace_map.get(travel_pace, 3)
+    per_day = pace_map.get(travel_pace, 3)
+    limit = per_day * travel_duration
 
     # Get category IDs matching user's selected activities
     categories = ",".join([
@@ -80,9 +81,9 @@ def get_activities(city, activities, travel_pace):
                     "category": place["categories"][0]["name"] if place["categories"] else "Attraction",
                     "address": place["location"].get("formatted_address", "Address unavailable")
                 })
-            return results
+            return results, per_day
         else:
-            return None
+            return None, per_day
     except Exception:
-        return None
+        return None, per_day
   
