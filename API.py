@@ -84,9 +84,6 @@ def get_activities(city, activities, travel_pace, travel_duration=7):
                 })
             return results, per_day
         else:
-            st.write(f"Status code: {response.status_code}")
-            st.write(response.text)
             return None, per_day
-    except Exception as e:
-      st.write(f"Erreur: {e}")
+    except Exception:
       return None, per_day
