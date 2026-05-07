@@ -63,7 +63,7 @@ def get_activities(city, activities, travel_pace, travel_duration=7):
     # Call Foursquare API
     try:
         response = requests.get(
-            "https://api.foursquare.com/v3/places/search",
+            "https://places-api.foursquare.com/v3/places/search",
             headers={"Authorization": FOURSQUARE_API_key},
             params={
                 "near": city,
