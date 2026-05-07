@@ -115,6 +115,8 @@ activities_prefs = st.session_state.preferences.get("activities", []) if "prefer
 travel_pace = st.session_state.preferences.get("travel_pace", "Moderate: Balance of activities and rest") if "preferences" in st.session_state else "Moderate: Balance of activities and rest"
 
 all_activities, per_day = get_activities(destination["place"], activities_prefs, travel_pace, travel_duration) or ([], 3)
+st.write(all_activities)
+st.write(per_day)
 
 offset = (selected_day - 1) * per_day
 recommended = all_activities[offset:offset + per_day] if all_activities else []
