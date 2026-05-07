@@ -2,7 +2,7 @@ import streamlit as st
 import requests #give python access to the internet
 
 API_key = "831bcc60123e44bf868c2ae62826bcd7" #API key from the weather website
-FOURSQUARE_API_key = "AYUKZRWT02MYN1A2FJSDK1GBFUOUDPS3NZI1BTFLBCJ3HN2M" #API key from foursquare for activities
+FOURSQUARE_API_key = "fsq3tJKsojVY8gYyK6rnqZ6nMVtqGnG9RHuGVVoyP3n4Gvg=" #API key from foursquare for activities
 
 def get_weather(city):
   """Fetch current weather for a city from OpenWeatherMap API"""
