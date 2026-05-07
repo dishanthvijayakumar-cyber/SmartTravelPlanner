@@ -69,7 +69,7 @@ with col3:
     st.subheader("Country:")
     st.write(destination["country"])
 with col4:
-    daily_budget = st.session_state.preferences.get("daily_budget", 0) if "preferences" in st.session_state else 0
+    daily_budget = st.session_state.preferences.get("daily_budget", destination["budget_max"]) if "preferences" in st.session_state else destination["budget_max"]
     total_budget = daily_budget * travel_duration
     st.metric("Daily Budget", f"${daily_budget}")
 with col4:
