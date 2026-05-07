@@ -1,3 +1,4 @@
+import streamlit as st
 import requests #give python access to the internet
 
 API_key = "831bcc60123e44bf868c2ae62826bcd7" #API key from the weather website
