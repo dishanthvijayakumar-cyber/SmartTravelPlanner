@@ -5,7 +5,7 @@ from ml_streamlit_integration import show_ml_results_page
 
 st.set_page_config(page_title="SmartTravel - Results", page_icon="🎯")
 
-GOOGLE_API_KEY = "AIzaSyDYgmwjxFawyHgmuZK37aOLtcY1wc1u79o"
+GOOGLE_API_KEY = "AIzaSyCGld3oEpZ58fy1OQB3ifIXoIo1PEorVcQ"
 GOOGLE_CX = "a0384911e29644e23"
 
 def get_city_image(place):
