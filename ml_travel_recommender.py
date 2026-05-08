@@ -6,249 +6,440 @@ from sklearn.metrics import mean_absolute_error, r2_score
 from sklearn.model_selection import train_test_split
 
 
-# This file contains the data and machine-learning logic for the travel match.
-# It is intentionally simple for a university group project:
-# 1. create example destination data
-# 2. generate artificial training data
-# 3. train a RandomForestRegressor
-# 4. predict a 0-100 match score for each destination
+# This file contains the machine-learning recommendation logic.
+# The Results page can call these functions after the existing questionnaire.
+# The model then predicts one ML Match Score from 0 to 100 for every destination.
 
 
-# Scikit-learn needs numbers, so we convert text categories into numeric values.
-BUDGET_MAP = {"low": 0, "medium": 1, "high": 2}
-CLIMATE_MAP = {"cold": 0, "mild": 1, "warm": 2}
-TRIP_LENGTH_MAP = {"short": 0, "medium": 1, "long": 2}
+RANDOM_SEED = 42
 
-# These columns use values from 1 to 5 and represent travel preferences.
-PREFERENCE_COLUMNS = ["beach", "culture", "nightlife", "nature", "adventure"]
+CLIMATE_MAP = {
+    "Cold": "cold",
+    "Temperate": "mild",
+    "Tropical": "warm",
+    "Desert": "warm",
+}
+
+CLIMATE_CODE = {"cold": 0, "mild": 1, "warm": 2}
+BUDGET_CODE = {"low": 0, "medium": 1, "high": 2}
+
+TRAVEL_STYLES = [
+    "Luxury Traveler",
+    "Adventure Seeker",
+    "Cultural Explorer",
+    "Relaxation Focused",
+    "Budget Backpacker",
+]
+
+TRAVEL_STYLE_CODE = {style: index for index, style in enumerate(TRAVEL_STYLES)}
+
+TRAVEL_PACES = [
+    "Relaxed: Take it slow, enjoy each moment",
+    "Moderate: Balance of activities and rest",
+    "Packed: See and do as much as possible",
+]
 
 
-def create_destinations_dataframe():
+def create_example_destinations():
     """
-    Create a small example dataset with travel destinations.
+    Create fallback destination data.
 
-    In a larger real project, this data could come from a database or CSV file.
-    For this project, keeping it inside a DataFrame makes the ML logic easy to
-    understand and run locally.
+    The real app already has a destination database. This fallback allows the
+    ML file to still run in isolation for testing or presentation purposes.
     """
 
-    data = [
-        ["Barcelona", "Spain", "medium", "warm", 5, 5, 4, 2, 3, "medium"],
-        ["Reykjavik", "Iceland", "high", "cold", 1, 3, 2, 5, 5, "long"],
-        ["Bali", "Indonesia", "medium", "warm", 5, 3, 3, 5, 4, "long"],
-        ["Paris", "France", "high", "mild", 2, 5, 4, 2, 1, "medium"],
-        ["Bangkok", "Thailand", "low", "warm", 3, 5, 5, 3, 3, "medium"],
-        ["Cape Town", "South Africa", "medium", "warm", 4, 4, 3, 5, 5, "long"],
-        ["Tokyo", "Japan", "high", "mild", 1, 5, 5, 2, 2, "long"],
-        ["Lisbon", "Portugal", "medium", "warm", 4, 4, 4, 3, 2, "short"],
-        ["Zurich", "Switzerland", "high", "cold", 1, 4, 2, 5, 3, "short"],
-        ["Marrakech", "Morocco", "low", "warm", 1, 5, 3, 2, 4, "medium"],
-        ["Vancouver", "Canada", "high", "mild", 2, 3, 3, 5, 4, "long"],
-        ["Santorini", "Greece", "medium", "warm", 5, 4, 3, 2, 2, "short"],
+    return [
+        {
+            "place": "Singapore",
+            "country": "Singapore",
+            "climate": "Tropical",
+            "budget_min": 180,
+            "budget_max": 450,
+            "description_sentence": "A clean, modern city with culture, food and nightlife.",
+            "styles": ["Luxury Traveler", "Cultural Explorer"],
+            "interests": ["Architecture", "Food & Cuisine", "Shopping", "Nightlife"],
+            "activities": ["City Tours", "Shopping", "Nightlife (Bars, Clubs)"],
+            "accommodation": ["Luxury Hotels", "Boutique Hotels"],
+            "pace": ["Moderate: Balance of activities and rest"],
+        },
+        {
+            "place": "Bali",
+            "country": "Indonesia",
+            "climate": "Tropical",
+            "budget_min": 60,
+            "budget_max": 220,
+            "description_sentence": "A warm island destination with beaches, nature and relaxation.",
+            "styles": ["Relaxation Focused", "Adventure Seeker"],
+            "interests": ["Beaches", "Wildlife", "Food & Cuisine"],
+            "activities": ["Relaxation (Spas, Beach Days)", "Nature Hikes", "Adventure Activities (Ziplining, Rafting)"],
+            "accommodation": ["Resorts", "Vacation Rentals (Airbnb, etc.)"],
+            "pace": ["Relaxed: Take it slow, enjoy each moment"],
+        },
+        {
+            "place": "Paris",
+            "country": "France",
+            "climate": "Temperate",
+            "budget_min": 160,
+            "budget_max": 500,
+            "description_sentence": "A cultural capital known for museums, architecture and cuisine.",
+            "styles": ["Luxury Traveler", "Cultural Explorer"],
+            "interests": ["Architecture", "History", "Art & Museums", "Food & Cuisine"],
+            "activities": ["City Tours", "Historical Sites", "Cultural Experiences (Museums, Local Events)"],
+            "accommodation": ["Luxury Hotels", "Boutique Hotels"],
+            "pace": ["Moderate: Balance of activities and rest"],
+        },
     ]
 
-    columns = [
-        "destination",
-        "country",
-        "budget",
-        "climate",
-        "beach",
-        "culture",
-        "nightlife",
-        "nature",
-        "adventure",
-        "trip_length",
-    ]
 
-    return pd.DataFrame(data, columns=columns)
-
-
-def create_user_profile(
-    budget,
-    climate,
-    beach,
-    culture,
-    nightlife,
-    nature,
-    adventure,
-    trip_length,
-):
+def load_project_destinations():
     """
-    Store the user's questionnaire answers in the format required by the model.
+    Load destinations from the existing project database if available.
+
+    If the project database cannot be imported, fallback example data is used.
     """
+
+    try:
+        from database import get_destinations
+
+        return get_destinations()
+    except Exception:
+        return create_example_destinations()
+
+
+def get_text_before_colon(value):
+    """
+    Convert labels like 'Luxury Traveler: Premium Experiences' to 'Luxury Traveler'.
+    """
+
+    return str(value).split(":")[0].strip()
+
+
+def ensure_list(value):
+    """
+    Convert missing values to an empty list and single strings to a one-item list.
+    """
+
+    if value is None:
+        return []
+    if isinstance(value, list):
+        return value
+    return [value]
+
+
+def budget_category_from_amount(amount):
+    """
+    Convert the questionnaire budget slider into low / medium / high.
+    """
+
+    if amount <= 100:
+        return "low"
+    if amount <= 300:
+        return "medium"
+    return "high"
+
+
+def budget_category_from_destination(destination):
+    """
+    Convert destination budget range into low / medium / high.
+    """
+
+    budget_min = destination.get("budget_min", 0)
+    budget_max = destination.get("budget_max", budget_min)
+    average_budget = (budget_min + budget_max) / 2
+    return budget_category_from_amount(average_budget)
+
+
+def normalize_climate(climate):
+    """
+    Convert questionnaire/database climate labels into model climate labels.
+    """
+
+    return CLIMATE_MAP.get(climate, str(climate).lower())
+
+
+def questionnaire_to_user_profile(preferences):
+    """
+    Convert the existing questionnaire answers into a compact ML user profile.
+    """
+
+    daily_budget = preferences.get("daily_budget", 50)
+    travel_duration = preferences.get("travel_duration", 7)
 
     return {
-        "budget": budget,
-        "climate": climate,
-        "beach": beach,
-        "culture": culture,
-        "nightlife": nightlife,
-        "nature": nature,
-        "adventure": adventure,
-        "trip_length": trip_length,
+        "travel_style": get_text_before_colon(preferences.get("travel_style", TRAVEL_STYLES[0])),
+        "climate": normalize_climate(preferences.get("ideal_climate", "Temperate")),
+        "daily_budget": daily_budget,
+        "budget_category": budget_category_from_amount(daily_budget),
+        "interests": ensure_list(preferences.get("interests", [])),
+        "activities": ensure_list(preferences.get("activities", [])),
+        "accommodation": ensure_list(preferences.get("accommodation", [])),
+        "travel_pace": preferences.get("travel_pace", TRAVEL_PACES[1]),
+        "travel_duration": travel_duration,
+    }
+
+
+def overlap_ratio(user_values, destination_values):
+    """
+    Calculate how much two text lists overlap.
+
+    The result is between 0 and 1.
+    """
+
+    user_set = set(ensure_list(user_values))
+    destination_set = set(ensure_list(destination_values))
+
+    if not user_set:
+        return 0
+
+    return len(user_set.intersection(destination_set)) / len(user_set)
+
+
+def calculate_criterion_scores(user, destination):
+    """
+    Calculate understandable 0-100 criterion scores.
+
+    These criterion scores are used both for training labels and for charts.
+    """
+
+    budget_min = destination.get("budget_min", 0)
+    budget_max = destination.get("budget_max", budget_min)
+    daily_budget = user["daily_budget"]
+
+    if budget_min <= daily_budget <= budget_max:
+        budget_score = 100
+    elif user["budget_category"] == budget_category_from_destination(destination):
+        budget_score = 70
+    else:
+        budget_score = 35
+
+    climate_score = 100 if user["climate"] == normalize_climate(destination.get("climate", "")) else 30
+
+    destination_styles = ensure_list(destination.get("styles", []))
+    style_score = 100 if user["travel_style"] in destination_styles else 25
+
+    interest_score = overlap_ratio(user["interests"], destination.get("interests", [])) * 100
+    activity_score = overlap_ratio(user["activities"], destination.get("activities", [])) * 100
+    accommodation_score = overlap_ratio(user["accommodation"], destination.get("accommodation", [])) * 100
+
+    destination_paces = ensure_list(destination.get("pace", []))
+    pace_score = 100 if user["travel_pace"] in destination_paces else 45
+
+    return {
+        "Budget": round(budget_score, 1),
+        "Climate": round(climate_score, 1),
+        "Style": round(style_score, 1),
+        "Interests": round(interest_score, 1),
+        "Activities": round(activity_score, 1),
+        "Accommodation": round(accommodation_score, 1),
+        "Pace": round(pace_score, 1),
     }
 
 
 def calculate_base_match_score(user, destination):
     """
-    Calculate a rule-based score from 0 to 100.
+    Create a transparent rule-based score used as the ML training target.
 
-    This function creates the training labels for the RandomForestRegressor.
-    The ML model learns to imitate these understandable matching rules.
+    The RandomForestRegressor learns to approximate this score from features.
     """
 
-    score = 0
+    criterion_scores = calculate_criterion_scores(user, destination)
 
-    # Exact matches for important categories receive fixed points.
-    if user["budget"] == destination["budget"]:
-        score += 15
+    weights = {
+        "Budget": 0.18,
+        "Climate": 0.14,
+        "Style": 0.14,
+        "Interests": 0.16,
+        "Activities": 0.16,
+        "Accommodation": 0.10,
+        "Pace": 0.12,
+    }
 
-    if user["climate"] == destination["climate"]:
-        score += 15
-
-    if user["trip_length"] == destination["trip_length"]:
-        score += 10
-
-    # For 1-5 preference values, smaller differences mean a better match.
-    # Example: user beach=5 and destination beach=5 is better than beach=2.
-    for column in PREFERENCE_COLUMNS:
-        difference = abs(user[column] - destination[column])
-        category_score = max(0, 12 - difference * 3)
-        score += category_score
-
-    # Make sure the score always stays within the required 0-100 range.
-    return max(0, min(100, score))
+    score = sum(criterion_scores[name] * weight for name, weight in weights.items())
+    return max(0, min(100, round(score, 1)))
 
 
 def build_features(user, destination):
     """
-    Convert one user-destination pair into numeric model features.
-
-    We include raw encoded values and extra "fit" features. These fit features
-    make the model easier to train because they directly describe how well the
-    user and destination match.
+    Convert one user-destination pair into numeric ML features.
     """
 
-    features = {
-        "user_budget": BUDGET_MAP[user["budget"]],
-        "destination_budget": BUDGET_MAP[destination["budget"]],
-        "budget_match": int(user["budget"] == destination["budget"]),
-        "user_climate": CLIMATE_MAP[user["climate"]],
-        "destination_climate": CLIMATE_MAP[destination["climate"]],
-        "climate_match": int(user["climate"] == destination["climate"]),
-        "user_trip_length": TRIP_LENGTH_MAP[user["trip_length"]],
-        "destination_trip_length": TRIP_LENGTH_MAP[destination["trip_length"]],
-        "trip_length_match": int(user["trip_length"] == destination["trip_length"]),
+    destination_budget = budget_category_from_destination(destination)
+    destination_climate = normalize_climate(destination.get("climate", "Temperate"))
+    criterion_scores = calculate_criterion_scores(user, destination)
+
+    return {
+        "user_budget_category": BUDGET_CODE[user["budget_category"]],
+        "destination_budget_category": BUDGET_CODE[destination_budget],
+        "budget_match": int(user["budget_category"] == destination_budget),
+        "budget_fit_score": criterion_scores["Budget"],
+        "user_climate": CLIMATE_CODE.get(user["climate"], 1),
+        "destination_climate": CLIMATE_CODE.get(destination_climate, 1),
+        "climate_match": int(user["climate"] == destination_climate),
+        "user_style": TRAVEL_STYLE_CODE.get(user["travel_style"], 0),
+        "style_match": int(user["travel_style"] in ensure_list(destination.get("styles", []))),
+        "interest_overlap": criterion_scores["Interests"] / 100,
+        "activity_overlap": criterion_scores["Activities"] / 100,
+        "accommodation_overlap": criterion_scores["Accommodation"] / 100,
+        "pace_match": int(user["travel_pace"] in ensure_list(destination.get("pace", []))),
+        "travel_duration": user["travel_duration"],
+        "destination_budget_min": destination.get("budget_min", 0),
+        "destination_budget_max": destination.get("budget_max", 0),
     }
-
-    for column in PREFERENCE_COLUMNS:
-        features[f"user_{column}"] = user[column]
-        features[f"destination_{column}"] = destination[column]
-        features[f"{column}_diff"] = abs(user[column] - destination[column])
-
-    return features
 
 
 def create_random_user_profile():
     """
-    Create a random user profile for artificial training data.
-
-    Because we do not have real user ratings, we generate many possible users
-    and score them with calculate_base_match_score().
+    Create one artificial user profile for model training.
     """
 
+    interests_pool = [
+        "Photography",
+        "Food & Cuisine",
+        "Wildlife",
+        "Architecture",
+        "Beaches",
+        "Mountains",
+        "History",
+        "Nightlife",
+        "Shopping",
+        "Art & Museums",
+        "Hiking",
+        "Water Sports",
+    ]
+
+    activities_pool = [
+        "City Tours",
+        "Nature Hikes",
+        "Cultural Experiences (Museums, Local Events)",
+        "Adventure Activities (Ziplining, Rafting)",
+        "Relaxation (Spas, Beach Days)",
+        "Food & Drink Experiences (Cooking Classes, Wine Tasting)",
+        "Nightlife (Bars, Clubs)",
+        "Shopping",
+        "Wildlife Encounters",
+        "Historical Sites",
+    ]
+
+    accommodation_pool = [
+        "Luxury Hotels",
+        "Mid-range Hotels",
+        "Budget Hotels",
+        "Cabins",
+        "Camping",
+        "Hostels",
+        "Vacation Rentals (Airbnb, etc.)",
+        "Boutique Hotels",
+        "Resorts",
+        "Bed & Breakfasts",
+    ]
+
     return {
-        "budget": random.choice(list(BUDGET_MAP.keys())),
-        "climate": random.choice(list(CLIMATE_MAP.keys())),
-        "beach": random.randint(1, 5),
-        "culture": random.randint(1, 5),
-        "nightlife": random.randint(1, 5),
-        "nature": random.randint(1, 5),
-        "adventure": random.randint(1, 5),
-        "trip_length": random.choice(list(TRIP_LENGTH_MAP.keys())),
+        "travel_style": random.choice(TRAVEL_STYLES),
+        "climate": random.choice(list(CLIMATE_CODE.keys())),
+        "daily_budget": random.randint(20, 600),
+        "budget_category": "medium",
+        "interests": random.sample(interests_pool, random.randint(1, 4)),
+        "activities": random.sample(activities_pool, random.randint(1, 4)),
+        "accommodation": random.sample(accommodation_pool, random.randint(1, 3)),
+        "travel_pace": random.choice(TRAVEL_PACES),
+        "travel_duration": random.choice([3, 5, 7, 10, 14, 21, 30]),
     }
 
 
-def create_training_data(destinations_df, number_of_users=500):
+def create_training_data(destinations, number_of_users=700):
     """
-    Create training data from random user profiles and all destinations.
-
-    Each row represents one possible user-destination combination.
+    Generate training rows from random users and all destinations.
     """
 
+    random.seed(RANDOM_SEED)
     rows = []
 
     for _ in range(number_of_users):
         user = create_random_user_profile()
+        user["budget_category"] = budget_category_from_amount(user["daily_budget"])
 
-        for _, destination in destinations_df.iterrows():
+        for destination in destinations:
             features = build_features(user, destination)
-            features["match_score"] = calculate_base_match_score(user, destination)
+            features["target_score"] = calculate_base_match_score(user, destination)
             rows.append(features)
 
     return pd.DataFrame(rows)
 
 
-def train_match_model(destinations_df):
+def train_match_model(destinations=None):
     """
-    Train the RandomForestRegressor and return the model plus evaluation metrics.
+    Train the RandomForestRegressor and return the model with evaluation metrics.
     """
 
-    training_df = create_training_data(destinations_df)
+    if destinations is None:
+        destinations = load_project_destinations()
 
-    X = training_df.drop(columns=["match_score"])
-    y = training_df["match_score"]
+    training_df = create_training_data(destinations)
+
+    X = training_df.drop(columns=["target_score"])
+    y = training_df["target_score"]
 
     X_train, X_test, y_train, y_test = train_test_split(
         X,
         y,
         test_size=0.2,
-        random_state=42,
+        random_state=RANDOM_SEED,
     )
 
     model = RandomForestRegressor(
-        n_estimators=100,
-        random_state=42,
+        n_estimators=120,
+        random_state=RANDOM_SEED,
     )
-
     model.fit(X_train, y_train)
 
     predictions = model.predict(X_test)
-
     metrics = {
         "mae": mean_absolute_error(y_test, predictions),
         "r2": r2_score(y_test, predictions),
     }
 
-    return model, metrics
+    return {
+        "model": model,
+        "feature_columns": list(X.columns),
+        "metrics": metrics,
+    }
 
 
-def predict_destination_scores(user_profile, destinations_df, model):
+def predict_destination_scores(questionnaire_preferences, destinations=None, model_bundle=None):
     """
-    Predict and sort travel match scores for all destinations.
-
-    Returns a DataFrame with the best destinations first.
+    Predict ML Match Scores for all destinations and sort by highest score.
     """
 
-    results = []
+    if destinations is None:
+        destinations = load_project_destinations()
 
-    for _, destination in destinations_df.iterrows():
-        features = build_features(user_profile, destination)
-        features_df = pd.DataFrame([features])
+    if model_bundle is None:
+        model_bundle = train_match_model(destinations)
 
-        predicted_score = model.predict(features_df)[0]
+    user = questionnaire_to_user_profile(questionnaire_preferences)
+    rows = []
+
+    for destination in destinations:
+        features = build_features(user, destination)
+        features_df = pd.DataFrame([features], columns=model_bundle["feature_columns"])
+        predicted_score = model_bundle["model"].predict(features_df)[0]
         predicted_score = max(0, min(100, predicted_score))
+        criterion_scores = calculate_criterion_scores(user, destination)
 
-        results.append(
-            {
-                "destination": destination["destination"],
-                "country": destination["country"],
-                "predicted_score": round(predicted_score, 1),
-                "budget": destination["budget"],
-                "climate": destination["climate"],
-                "trip_length": destination["trip_length"],
-            }
-        )
+        row = {
+            "destination": destination.get("place", destination.get("destination", "Unknown")),
+            "country": destination.get("country", ""),
+            "description_sentence": destination.get("description_sentence", ""),
+            "ml_match_score": round(predicted_score, 1),
+            "budget_min": destination.get("budget_min", 0),
+            "budget_max": destination.get("budget_max", 0),
+            "climate": destination.get("climate", ""),
+        }
 
-    results_df = pd.DataFrame(results)
-    return results_df.sort_values(by="predicted_score", ascending=False)
+        for criterion, score in criterion_scores.items():
+            row[f"{criterion.lower()}_score"] = score
+
+        rows.append(row)
+
+    results_df = pd.DataFrame(rows)
+    return results_df.sort_values(by="ml_match_score", ascending=False).reset_index(drop=True)
