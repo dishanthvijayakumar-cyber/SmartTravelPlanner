@@ -9,27 +9,21 @@ from database import get_destinations
 # Set the browser tab title and icon
 st.set_page_config(page_title="SmartTravel - Surprise!", page_icon="🎲")
 
-# --- Page Styling ---
-# Custom CSS to override Streamlit's default look
+# Custom CSS to override Streamlit's default look:
+# dark purple background, custom fonts, styled buttons and metrics
 st.markdown("""
 <style>
-# Load two Google Fonts: Playfair Display for headings, DM Sans for body text
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap');
 
-# Set a dark purple gradient as the page background
 html, body, [data-testid="stAppViewContainer"] {
     background: linear-gradient(135deg, #1a0030 0%, #2d0057 40%, #0d001a 100%) !important;
     font-family: 'DM Sans', sans-serif;
     color: #ffffff;
 }
-
-# Hide the default Streamlit header bar
 [data-testid="stHeader"] { background: transparent !important; }
 
-# Use the serif font for all heading levels
 h1, h2, h3 { font-family: 'Playfair Display', serif !important; }
 
-# Style all buttons with a purple gradient and rounded corners
 .stButton > button {
     background: linear-gradient(135deg, #6a0dad, #8a2be2) !important;
     color: white !important; border: none !important;
@@ -37,19 +31,15 @@ h1, h2, h3 { font-family: 'Playfair Display', serif !important; }
     font-weight: 600 !important; transition: all 0.3s ease !important;
     box-shadow: 0 4px 20px rgba(138,43,226,0.4) !important;
 }
-
-# Lift the button slightly on hover for a subtle interactive effect
 .stButton > button:hover {
     transform: translateY(-2px) !important;
     box-shadow: 0 8px 30px rgba(138,43,226,0.6) !important;
 }
 
-# Make metric values white and bold, labels light purple
 [data-testid="stMetricValue"] { color: #ffffff !important; font-weight: 700 !important; }
 [data-testid="stMetricLabel"] { color: #c084fc !important; }
 </style>
 """, unsafe_allow_html=True)
-# --- End Styling ---
 
 
 # Button to go back to the main page
@@ -65,7 +55,6 @@ if "selected_destination" not in st.session_state:
 # Grab the destination dict that was stored when the user rolled the dice
 destination = st.session_state.selected_destination
 
-# --- Hero Section ---
 # Centered title block showing the destination name with a gradient text effect
 st.markdown(f"""
 <div style="text-align:center; padding:30px 20px 20px;">
@@ -139,4 +128,3 @@ with col2:
         destinations = get_destinations()
         st.session_state.selected_destination = random.choice(destinations)
         st.rerun()
-
