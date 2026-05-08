@@ -3,25 +3,12 @@ from API import get_weather
 import requests
 from ml_streamlit_integration import show_ml_results_page
 
-st.set_page_config(page_title="SmartTravel - Results", page_icon="🎯")
-
-GOOGLE_API_KEY = "AIzaSyCGld3oEpZ58fy1OQB3ifIXoIo1PEorVcQ"
-GOOGLE_CX = "a0384911e29644e23"
-
 def get_city_image(place):
     try:
-        url = "https://www.googleapis.com/customsearch/v1"
-        params = {
-            "key": GOOGLE_API_KEY,
-            "cx": GOOGLE_CX,
-            "q": f"{place} city travel",
-            "searchType": "image",
-            "num": 1,
-            "imgType": "photo",
-        }
-        r = requests.get(url, params=params)
+        headers = {'User-Agent': 'SmartTravelPlanner/1.0'}
+        r = requests.get(f"https://en.wikipedia.org/api/rest_v1/page/summary/{place.replace(' ', '_')}", timeout=5, headers=headers)
         data = r.json()
-        return data["items"][0]["link"]
+        return data.get("thumbnail", {}).get("source", None)
     except:
         return None
 # Design: AI-generated
