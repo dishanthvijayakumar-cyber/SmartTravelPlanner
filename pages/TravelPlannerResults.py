@@ -1,5 +1,6 @@
 import streamlit as st
 from API import get_weather
+import requests
 GOOGLE_API_KEY = "AIzaSyDYgmwjxFawyHgmuZK37aOLtcY1wc1u79o"
 GOOGLE_CX = "a0384911e29644e23"
 
