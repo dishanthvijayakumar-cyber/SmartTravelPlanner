@@ -1,6 +1,8 @@
 import streamlit as st
 from API import get_weather
 import requests
+from ml_results_integration import show_ml_results_page
+
 
 def get_city_image(place):
     url = f"https://en.wikipedia.org/api/rest_v1/page/summary/{place.replace(' ', '_')}"
@@ -54,7 +56,11 @@ if "recommendations" not in st.session_state:
 if st.button("Return Home", icon="🏠"):
     st.switch_page("TravelPlannerDemo.py")
 
+show_ml_results_page(st.session_state.preferences)
+st.stop()
+
 st.title("🎯 Your Top 10 Destinations")
+
 
 #Chart top 10 destinations
 import plotly.express as px
