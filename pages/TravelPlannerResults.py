@@ -1,6 +1,10 @@
 import streamlit as st
 from API import get_weather
 import requests
+from ml_streamlit_integration import show_ml_results_page
+
+st.set_page_config(page_title="SmartTravel - Results", page_icon="🎯")
+
 GOOGLE_API_KEY = "AIzaSyDYgmwjxFawyHgmuZK37aOLtcY1wc1u79o"
 GOOGLE_CX = "a0384911e29644e23"
 
