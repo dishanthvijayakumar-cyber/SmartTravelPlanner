@@ -51,6 +51,9 @@ def get_destination_image(place):
     except Exception:
         pass
     return None
+
+
+def get_activities(city, activities, travel_pace, travel_duration=7):
     """Fetch recommended activities from Foursquare based on user preferences"""
 
     # Map questionnaire answers to Foursquare category IDs
