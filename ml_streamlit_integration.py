@@ -8,9 +8,18 @@ from ml_travel_recommender import (
 )
 
 
+# This file connects the existing Streamlit questionnaire with the ML model.
+# Important: it does not create a second questionnaire. It reuses the answers
+# the user already entered in TravelPlannerQuestionnaire.py.
+
+
 @st.cache_data
 def load_ml_destinations():
-    """Load the example destinations once for the Streamlit app."""
+    """
+    Load the example destination data once.
+
+    Streamlit reruns the page often, so caching avoids unnecessary repeated work.
+    """
 
     return create_destinations_dataframe()
 
@@ -18,66 +27,123 @@ def load_ml_destinations():
 @st.cache_resource
 def load_ml_model():
     """
-    Train the RandomForest model once and cache it.
+    Train the RandomForestRegressor once and cache the trained model.
 
-    Streamlit reruns the script after interactions. Without caching, the model
-    would be trained again after every click or slider change.
+    Without this cache, the model would train again after every button click or
+    widget change, which would make the app feel slower.
     """
 
     destinations_df = create_destinations_dataframe()
     return train_match_model(destinations_df)
 
 
-def show_ml_travel_match_section():
+def convert_questionnaire_to_ml_profile(questionnaire_preferences):
     """
-    Show the complete ML travel match section inside an existing Streamlit page.
+    Convert the existing questionnaire answers into the ML model format.
 
-    Import this function in TravelPlannerDemo.py or at the end of your
-    questionnaire file, then call show_ml_travel_match_section().
+    The original questionnaire uses values such as:
+    - daily budget as a number
+    - climate as Tropical / Temperate / Cold / Desert
+    - interests and activities as text lists
+
+    The ML model expects simpler values:
+    - budget: low / medium / high
+    - climate: cold / mild / warm
+    - beach, culture, nightlife, nature, adventure: values from 1 to 5
+    - trip_length: short / medium / long
+    """
+
+    daily_budget = questionnaire_preferences.get("daily_budget", 50)
+    ideal_climate = questionnaire_preferences.get("ideal_climate", "Temperate")
+    interests = questionnaire_preferences.get("interests", [])
+    activities = questionnaire_preferences.get("activities", [])
+    travel_duration = questionnaire_preferences.get("travel_duration", 7)
+
+    # Convert the numeric budget slider into the three budget categories.
+    if daily_budget <= 100:
+        budget = "low"
+    elif daily_budget <= 300:
+        budget = "medium"
+    else:
+        budget = "high"
+
+    # Convert the questionnaire climate labels into the ML climate labels.
+    climate_map = {
+        "Cold": "cold",
+        "Temperate": "mild",
+        "Tropical": "warm",
+        "Desert": "warm",
+    }
+    climate = climate_map.get(ideal_climate, "mild")
+
+    # Convert travel duration in days into short / medium / long.
+    if travel_duration <= 5:
+        trip_length = "short"
+    elif travel_duration <= 14:
+        trip_length = "medium"
+    else:
+        trip_length = "long"
+
+    # The original questionnaire has interests and activities as text answers.
+    # We convert those text choices into simple 1-5 preference scores.
+    combined_answers = interests + activities
+
+    def score_from_keywords(keywords):
+        """
+        Return a 1-5 score based on whether selected answers contain keywords.
+
+        This keeps the connection between the old questionnaire and the new ML
+        model understandable for the presentation.
+        """
+
+        matches = 0
+        for answer in combined_answers:
+            for keyword in keywords:
+                if keyword in answer:
+                    matches += 1
+
+        if matches >= 2:
+            return 5
+        if matches == 1:
+            return 4
+        return 2
+
+    beach = score_from_keywords(["Beaches", "Beach", "Water Sports", "Relaxation"])
+    culture = score_from_keywords(
+        ["Culture", "Cultural", "History", "Historical", "Art", "Museums", "Architecture"]
+    )
+    nightlife = score_from_keywords(["Nightlife", "Bars", "Clubs"])
+    nature = score_from_keywords(["Wildlife", "Mountains", "Hiking", "Nature", "Hikes"])
+    adventure = score_from_keywords(["Adventure", "Ziplining", "Rafting", "Water Sports", "Hiking"])
+
+    return create_user_profile(
+        budget=budget,
+        climate=climate,
+        beach=beach,
+        culture=culture,
+        nightlife=nightlife,
+        nature=nature,
+        adventure=adventure,
+        trip_length=trip_length,
+    )
+
+
+def show_ml_results_from_questionnaire(questionnaire_preferences):
+    """
+    Display ML recommendations based on the existing questionnaire answers.
+
+    This function should be called at the end of TravelPlannerQuestionnaire.py.
+    It shows only the ML result section, not another questionnaire.
     """
 
     destinations_df = load_ml_destinations()
     model, metrics = load_ml_model()
+    user_profile = convert_questionnaire_to_ml_profile(questionnaire_preferences)
 
-    st.header("Personalized Travel Match Score")
-    st.write("Answer the questions and get your Top-3 travel recommendations.")
+    st.header("ML Travel Match Score")
+    st.write("Based on your questionnaire answers, these are your Top-3 ML recommendations.")
 
-    budget = st.selectbox(
-        "Budget",
-        ["low", "medium", "high"],
-        key="ml_budget",
-    )
-
-    climate = st.selectbox(
-        "Preferred climate",
-        ["cold", "mild", "warm"],
-        key="ml_climate",
-    )
-
-    beach = st.slider("Beach", 1, 5, 3, key="ml_beach")
-    culture = st.slider("Culture", 1, 5, 3, key="ml_culture")
-    nightlife = st.slider("Nightlife", 1, 5, 3, key="ml_nightlife")
-    nature = st.slider("Nature", 1, 5, 3, key="ml_nature")
-    adventure = st.slider("Adventure", 1, 5, 3, key="ml_adventure")
-
-    trip_length = st.selectbox(
-        "Trip length",
-        ["short", "medium", "long"],
-        key="ml_trip_length",
-    )
-
-    if st.button("Calculate Travel Match", key="ml_calculate_match"):
-        user_profile = create_user_profile(
-            budget=budget,
-            climate=climate,
-            beach=beach,
-            culture=culture,
-            nightlife=nightlife,
-            nature=nature,
-            adventure=adventure,
-            trip_length=trip_length,
-        )
-
+    if st.button("Calculate ML Top 3", key="ml_calculate_from_existing_questionnaire"):
         scores_df = predict_destination_scores(
             user_profile=user_profile,
             destinations_df=destinations_df,
@@ -97,11 +163,11 @@ def show_ml_travel_match_section():
                 """
             )
 
-        st.subheader("Best Destination Scores")
+        st.subheader("Top 3 Match Scores")
         chart_data = top_3.set_index("destination")["predicted_score"]
         st.bar_chart(chart_data)
 
-        with st.expander("Show all destination scores"):
+        with st.expander("Show all ML scores"):
             st.dataframe(scores_df, use_container_width=True)
 
         st.caption(
