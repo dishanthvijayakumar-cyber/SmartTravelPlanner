@@ -1,16 +1,7 @@
 import streamlit as st
 from API import get_weather
-import requests
 from ml_streamlit_integration import show_ml_results_page
 
-def get_city_image(place):
-    try:
-        headers = {'User-Agent': 'SmartTravelPlanner/1.0'}
-        r = requests.get(f"https://en.wikipedia.org/api/rest_v1/page/summary/{place.replace(' ', '_')}", timeout=5, headers=headers)
-        data = r.json()
-        return data.get("thumbnail", {}).get("source", None)
-    except:
-        return None
 # Design: AI-generated
 st.markdown("""
 <style>
@@ -105,9 +96,7 @@ for rank, destination in enumerate(st.session_state.recommendations, 1):
     </div>
     """, unsafe_allow_html=True)
 
-    img_url = get_city_image(destination['place'])
-    if img_url:
-        st.image(img_url, width=300)
+    st.image(f"https://en.wikipedia.org/wiki/Special:FilePath/{destination['place']}.jpg", width=300)
     weather = get_weather(destination["place"])
     if weather: 
         col1, col2, col3, col4 = st.columns(4)
