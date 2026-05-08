@@ -97,7 +97,8 @@ for rank, destination in enumerate(st.session_state.recommendations, 1):
     """, unsafe_allow_html=True)
 
     place_query = destination['place'].replace(" ", "+")
-    st.image(f"https://source.unsplash.com/400x250/?{place_query},travel", width=300)
+    st.image(f"https://loremflickr.com/400/250/{place_query}", width=300)
+    weather = get_weather(destination["place"])
     if weather: 
         col1, col2, col3, col4 = st.columns(4)
         with col1:
