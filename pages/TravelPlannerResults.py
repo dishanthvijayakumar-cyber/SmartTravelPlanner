@@ -1,11 +1,12 @@
 import streamlit as st
 from API import get_weather
-import requests 
+import requests
 
 def get_city_image(place):
     url = f"https://en.wikipedia.org/api/rest_v1/page/summary/{place.replace(' ', '_')}"
     try:
-        r = requests.get(url, timeout=5)
+        headers = {'User-Agent': 'SmartTravelPlanner/1.0'}
+        r = requests.get(url, timeout=5, headers=headers)
         data = r.json()
         return data.get("thumbnail", {}).get("source", None)
     except:
