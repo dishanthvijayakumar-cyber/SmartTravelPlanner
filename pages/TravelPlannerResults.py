@@ -1,6 +1,15 @@
 import streamlit as st
 from API import get_weather
+import requests 
 
+def get_city_image(place):
+    url = f"https://en.wikipedia.org/api/rest_v1/page/summary/{place.replace(' ', '_')}"
+    try:
+        r = requests.get(url, timeout=5)
+        data = r.json()
+        return data.get("thumbnail", {}).get("source", None)
+    except:
+        return None
 st.set_page_config(page_title="SmartTravel - Results", page_icon="🎯")
 
 # Design: AI-generated
@@ -96,8 +105,9 @@ for rank, destination in enumerate(st.session_state.recommendations, 1):
     </div>
     """, unsafe_allow_html=True)
 
-    place_query = destination['place'].replace(" ", "+")
-    st.image(f"https://loremflickr.com/400/250/{place_query}", width=300)
+    img_url = get_city_image(destination['place'])
+    if img_url:
+        st.image(img_url, width=300)
     weather = get_weather(destination["place"])
     if weather: 
         col1, col2, col3, col4 = st.columns(4)
