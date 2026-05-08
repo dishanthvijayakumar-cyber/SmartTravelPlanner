@@ -46,7 +46,7 @@ st.markdown("""
 <div style="text-align:center; padding:60px 20px 20px;">
     <p style="font-family:'DM Sans',sans-serif; font-size:0.8rem; letter-spacing:4px;
        text-transform:uppercase; color:#c084fc; margin-bottom:14px;">
-        ✦ AI-Powered Travel Planning ✦
+        ✦ Travel Planning Enhanced by Machine Learning ✦
     </p>
     <h1 style="font-family:'Playfair Display',serif; font-size:clamp(2.4rem,6vw,4.5rem);
        font-weight:900; line-height:1.1; color:#ffffff; margin:0 0 20px;">
@@ -135,7 +135,7 @@ features = [
     ("🔍", "Detailed Insights", "Explore activities, budget breakdowns, and live weather for every destination."),
     ("✅", "Trusted Information", "Curated picks from verified travel experts and real travelers."),
     ("⚡", "Instant Results", "Get personalised travel matches in seconds, not hours."),
-    ("🤖", "AI-Powered", "Smart suggestions based on your unique preferences and travel style."),
+    ("🤖", "Travel Planning Enhanced by Machine Learning", "Smart suggestions based on your unique preferences and travel style."),
     ("📊", "Match Scores", "See exactly how well each destination fits your interests."),
     ("🗺️", "Easy Planning", "Build your perfect itinerary with a clean, intuitive dashboard."),
 ]
