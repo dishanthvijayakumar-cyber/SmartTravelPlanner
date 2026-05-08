@@ -1,0 +1,14 @@
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Database
+*.db
+
+# Large media files (store locally if needed)
+*.mp4
+*.html
+
+# OS files
+.DS_Store

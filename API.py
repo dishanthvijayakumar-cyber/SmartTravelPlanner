@@ -27,7 +27,30 @@ def get_weather(city):
   else:
       return None #city not found or API error
 
-def get_activities(city, activities, travel_pace, travel_duration=7):
+
+
+UNSPLASH_ACCESS_KEY = "8wlF9Pb5XZUh_zoCcUS8k9eU-mI_zcwI0rcG_OmGlPM"
+
+def get_destination_image(place):
+    """Fetch a travel photo for a destination from Unsplash"""
+    try:
+        response = requests.get(
+            "https://api.unsplash.com/search/photos",
+            headers={"Authorization": f"Client-ID {UNSPLASH_ACCESS_KEY}"},
+            params={
+                "query": f"{place} travel landmark",
+                "per_page": 1,
+                "orientation": "landscape"
+            },
+            timeout=10
+        )
+        if response.status_code == 200:
+            data = response.json()
+            if data["results"]:
+                return data["results"][0]["urls"]["regular"]
+    except Exception:
+        pass
+    return None
     """Fetch recommended activities from Foursquare based on user preferences"""
 
     # Map questionnaire answers to Foursquare category IDs

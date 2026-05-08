@@ -1,5 +1,5 @@
 import streamlit as st
-from API import get_weather
+from API import get_weather, get_destination_image
 from ml_streamlit_integration import show_ml_results_page
 
 # Design: AI-generated
@@ -96,7 +96,12 @@ for rank, destination in enumerate(st.session_state.recommendations, 1):
     </div>
     """, unsafe_allow_html=True)
 
-    st.image(f"https://en.wikipedia.org/wiki/Special:FilePath/{destination['place']}.jpg", width=300)
+    # Try to get a beautiful travel photo from Unsplash for this destination
+    # This searches for images using "{place} travel landmark" as the query
+    img_url = get_destination_image(destination["place"])
+    # Only show the image if we got one back from Unsplash
+    if img_url:
+        st.image(img_url, width=300)
     weather = get_weather(destination["place"])
     if weather: 
         col1, col2, col3, col4 = st.columns(4)

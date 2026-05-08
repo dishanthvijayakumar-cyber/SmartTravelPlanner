@@ -1,16 +1,19 @@
-import streamlit as st
-import random
+import streamlit as st  # Streamlit is the framework we're using to build the web app
+import random  # We need this to pick a random destination when user clicks "Try Another"
 import sys
 
-# Make sure Python looks in the current folder for local modules like database.py
+# This line is a bit of a workaround - we're telling Python to also look in the current folder
+# when searching for modules. This is needed because Streamlit sometimes has trouble finding
+# our local files like database.py
 sys.path.insert(0, '.')
-from database import get_destinations
+from database import get_destinations  # Get the list of all possible destinations from our database
+from API import get_destination_image  # Function to fetch nice travel photos from Unsplash
 
-# Set the browser tab title and icon
+# Here we set up how the browser tab looks - title and a dice emoji as the icon
 st.set_page_config(page_title="SmartTravel - Surprise!", page_icon="🎲")
 
-# Custom CSS to override Streamlit's default look:
-# dark purple background, custom fonts, styled buttons and metrics
+# This big block is our custom CSS styling to make the app look good (dark purple theme, nice fonts, etc.)
+# CSS is basically just styling rules - we're overriding Streamlit's default look to match our design
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap');
@@ -42,20 +45,24 @@ h1, h2, h3 { font-family: 'Playfair Display', serif !important; }
 """, unsafe_allow_html=True)
 
 
-# Button to go back to the main page
+# Simple back button so users can go back to the main page
 if st.button("Return Home", icon="🏠"):
     st.switch_page("TravelPlannerDemo.py")
 
-# If no destination was set in session (e.g. user landed here directly), redirect home
+# Check if the user actually came here through the app properly (not just typing the URL directly)
+# If there's no destination saved in the session, we show a warning and send them back home
+# This prevents people from landing on a broken page
 if "selected_destination" not in st.session_state:
     st.warning("No destination selected. Going back home...")
     st.switch_page("TravelPlannerDemo.py")
-    st.stop()  # Stop execution so nothing else renders
+    st.stop()  # This stops the page from rendering anything else
 
-# Grab the destination dict that was stored when the user rolled the dice
+# Get the destination that was randomly picked earlier and stored in session state
+# Session state is like a temporary memory that keeps data while the user browses around
 destination = st.session_state.selected_destination
 
-# Centered title block showing the destination name with a gradient text effect
+# This creates the big header at the top of the page with the destination name
+# We're using HTML inside the markdown to create a nice gradient text effect and center everything
 st.markdown(f"""
 <div style="text-align:center; padding:30px 20px 20px;">
     <p style="font-size:0.75rem; letter-spacing:4px; text-transform:uppercase; color:#c084fc; margin-bottom:10px;">
@@ -71,13 +78,20 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-# Pull a representative image from Wikipedia using the place name
-st.image(
-    f"https://en.wikipedia.org/wiki/Special:FilePath/{destination['place']}.jpg",
-    width=400,
-)
+# Get a nice travel photo for the destination from Unsplash
+# We search Unsplash using "{place} travel landmark" which usually gives good results
+# Unsplash is a free photo site with really nice travel pictures
+img_url = get_destination_image(destination["place"])
 
-# Show three key stats side by side: climate and daily budget range
+# If we got a photo back from Unsplash, show it (400px wide for the surprise page)
+# If the API fails or doesn't find anything, we fall back to grabbing a Wikipedia image instead
+if img_url:
+    st.image(img_url, width=400)
+else:
+    st.image(f"https://en.wikipedia.org/wiki/Special:FilePath/{destination['place']}.jpg", width=400)
+
+# Show some quick stats about the destination in three columns
+# This gives users an immediate overview: what the climate is like and roughly how expensive it is
 col1, col2, col3 = st.columns(3)
 with col1:
     st.metric("Climate", destination["climate"].capitalize())
@@ -88,11 +102,13 @@ with col3:
 
 st.markdown("---")
 
-# Short description of the destination
+# A simple subheader and the description sentence we stored for this destination
 st.subheader("About this destination")
 st.write(destination["description_sentence"])
 
-# Build a list of tag rows — only include a tag if the data actually exists
+# Build up a list of interesting tags/details about this destination
+# We go through each possible field and only add it to our list if it actually has data
+# This way we don't show empty rows with nothing in them
 tags = []
 if destination.get("best_for"):
     tags.append(("🏆 Best for", destination["best_for"]))
@@ -105,7 +121,8 @@ if destination.get("styles"):
 if destination.get("accommodation"):
     tags.append(("🏨 Accommodation", ", ".join(destination["accommodation"])))
 
-# Render each tag as a two-column row: label on the left, value on the right
+# Loop through our tags and display each one as a little row with an emoji and text
+# Using HTML divs to make the labels and values line up nicely side by side
 for label, value in tags:
     st.markdown(f"""
     <div style="display:flex; gap:12px; margin-bottom:10px; align-items:flex-start;">
@@ -116,15 +133,16 @@ for label, value in tags:
 
 st.markdown("---")
 
-# Two action buttons side by side
+# Two buttons at the bottom of the page so the user can decide what to do next
 col1, col2 = st.columns(2)
 with col1:
-    # Takes the user to the full trip planning dashboard
+    # This button takes them to the full trip planning dashboard where they can see activities etc.
     if st.button("🗺️ Plan this trip", use_container_width=True):
         st.switch_page("pages/TravelPlannerDashboard.py")
 with col2:
-    # Pick a new random destination and reload the page with it
+    # This button picks a completely new random destination and refreshes the page to show it
+    # Uses random.choice() to pick any destination from our database
     if st.button("🎲 Try Another!", use_container_width=True):
         destinations = get_destinations()
         st.session_state.selected_destination = random.choice(destinations)
-        st.rerun()
+        st.rerun()  # Refresh the page to show the new destination
