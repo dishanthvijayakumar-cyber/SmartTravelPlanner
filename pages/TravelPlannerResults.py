@@ -61,9 +61,6 @@ if "recommendations" not in st.session_state:
 if st.button("Return Home", icon="🏠"):
     st.switch_page("TravelPlannerDemo.py")
 
-show_ml_results_page(st.session_state.preferences)
-st.stop()
-
 st.title("🎯 Your Top 10 Destinations")
 
 
