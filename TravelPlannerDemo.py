@@ -1,10 +1,9 @@
 import streamlit as st
-import streamlit as st
 import random
 import sys
 from database import get_destinations
 
-st.set_page_config(page_title="SmartTravel - Home", page_icon="🌆") #Tab Title & Icon
+st.set_page_config(page_title="SmartTravel - Home", page_icon="🌆") #sets Tab Title & Icon
 
 #Design (AI-generated)
 st.markdown("""
@@ -37,11 +36,8 @@ h1, h2, h3 { font-family: 'Playfair Display', serif !important; }
 </style>
 """, unsafe_allow_html=True)
 
-#Notes: Majority of Markdown Code is AI generated; this formatting looks nicer,
-# however I'm not sure if we're allowed to use the complicated ones
-# We can change back to the simpler version learned in class if needed
 
-#Page Title & Subheaders (AI-generated)
+#Page Title & Subheaders (AI-generated) - better design
 st.markdown("""
 <div style="text-align:center; padding:60px 20px 20px;">
     <p style="font-family:'DM Sans',sans-serif; font-size:0.8rem; letter-spacing:4px;
@@ -63,16 +59,18 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-#Buttons to start journey -- no feature yet, just for show
+
+#Buttons to start journey
 col1, col2 = st.columns(2) #makes two columns for buttons --> positions them next to eachother
-with col1:
+with col1: #defines first column
     if st.button("Start Your Journey", icon="✈️"): #places button in first column, with icon
-        st.switch_page("pages/TravelPlannerQuestionnaire.py")
-with col2:
+        st.switch_page("pages/TravelPlannerQuestionnaire.py") #switches to questionnaire page when button is clicked
+with col2: #defines second column
     if st.button("View Dashboard", icon="📊"): #places button in second column, with icon
-        st.switch_page("pages/TravelPlannerDashboard.py") 
-#add spacing between buttons and stats with 40px distance (AI generated)
-st.markdown("<div style='margin-top: 40px;'></div>", unsafe_allow_html=True)
+        st.switch_page("pages/TravelPlannerDashboard.py") #changes page to dashboard when button is clicked
+
+
+st.markdown("<div style='margin-top: 40px;'></div>", unsafe_allow_html=True) #add spacing between buttons and stats with 40px distance (AI generated)
 
 #Website statistics (AI-generated)
 st.markdown("""
@@ -97,13 +95,15 @@ st.markdown("""
 #add spacing with 60px distance (AI generated)
 st.markdown("<div style='margin-top: 60px;'></div>", unsafe_allow_html=True)
 
-#Discover Your Way Section
-st.title("Discover Your Way")
-st.subheader("Not sure where to start? Try an alternative way to find your perfect destination:")
 
-#Surprise Me button (AI-generated design)
-col_l, col_c, col_r = st.columns([2, 2, 2])
-with col_c:
+#Discover Your Way Section
+st.title("Discover Your Way") #sets title for section discover your way
+st.subheader("Not sure where to start? Try an alternative way to find your perfect destination:") #sets subheader description for discover your way section
+
+#Surprise Me button
+col_l, col_c, col_r = st.columns([2, 2, 2]) #defines 3 columns with equal width
+with col_c: #only define col_c to center the button
+    #Suprise me box design (AI-generated)
     st.markdown("""
     <div style="background:rgba(255,255,255,0.06); border:1px solid rgba(192,132,252,0.3);
          border-radius:24px; padding:36px 28px; text-align:center; backdrop-filter:blur(12px);">
@@ -114,10 +114,12 @@ with col_c:
         </p>
     </div>
     """, unsafe_allow_html=True)
-    if st.button("🎲  Surprise Me!", use_container_width=True):
-        destinations = get_destinations()
-        st.session_state.selected_destination = random.choice(destinations)
-        st.switch_page("pages/TravelPlannerSurprise.py")
+    
+
+    if st.button("🎲  Surprise Me!", use_container_width=True): #places surprise me button that fills the entire button
+        destinations = get_destinations() #gets list of destinations from database when button is clicked
+        st.session_state.selected_destination = random.choice(destinations) #defines session state variable selected_destination and assigns a random destination from the list of destinations
+        st.switch_page("pages/TravelPlannerSurprise.py") #switches to surprise me page when button is clicked
 
 
 #add spacing with 60px distance (AI generated)
@@ -138,11 +140,11 @@ features = [
     ("🤖", "Travel Planning Enhanced by Machine Learning", "Smart suggestions based on your unique preferences and travel style."),
     ("📊", "Match Scores", "See exactly how well each destination fits your interests."),
     ("🗺️", "Easy Planning", "Build your perfect itinerary with a clean, intuitive dashboard."),
-]
+] #creates a list of features with an icon, title, and description for each feature to be displayed in the why choose smarttravel section
 
-cols = st.columns(3)
-for i, (icon, title, desc) in enumerate(features):
-    with cols[i % 3]:
+cols = st.columns(3) #creates 3 columns
+for i, (icon, title, desc) in enumerate(features): #loops through the features list and unpacks the icon, title, and description for each feature, while also keeping track of the index i
+    with cols[i % 3]: #uses the modulus operator to determine which column to place each feature in, ensuring that features are distributed evenly across the 3 columns
         st.markdown(f"""
         <div style="background:rgba(255,255,255,0.06); border:1px solid rgba(192,132,252,0.2);
              border-radius:20px; padding:28px 22px; margin-bottom:20px; backdrop-filter:blur(8px);">
@@ -150,11 +152,10 @@ for i, (icon, title, desc) in enumerate(features):
             <h4 style="font-family:'Playfair Display',serif; font-size:1.05rem; color:#fff; margin:0 0 10px;">{title}</h4>
             <p style="color:#c084fc; font-size:0.85rem; margin:0; font-weight:300; line-height:1.6;">{desc}</p>
         </div>
-        """, unsafe_allow_html=True)
+        """, unsafe_allow_html=True) #designs each feature box with a background, border, padding, and styles for the icon, title, and description using the values from the features list (AI Generated)
 
 #spacing (AI generated)
 st.markdown("<div style='margin-top: 60px;'></div>", unsafe_allow_html=True) 
-col1, col2, col3 = st.columns(3)
 
 #Ready to explore section (Design AI-generated)
 st.markdown("""
@@ -169,7 +170,7 @@ st.markdown("""
     </p>
 </div>
 """, unsafe_allow_html=True)
-col_l, col_c, col_r = st.columns([3, 2, 3])
-with col_c:
-    if st.button("Start Questionnaire →", use_container_width=True):
-        st.switch_page("pages/TravelPlannerQuestionnaire.py")
+col_l, col_c, col_r = st.columns([3, 2, 3]) #creates three columns with different widths (left and right columns are wider than the center)
+with col_c: #only define col_c to center the button
+    if st.button("Start Questionnaire →", use_container_width=True): #places a button in the center column that fills the entire width of the column, with the text "Start Questionnaire →"
+        st.switch_page("pages/TravelPlannerQuestionnaire.py") #switches to the questionnaire page when the button is clicked
