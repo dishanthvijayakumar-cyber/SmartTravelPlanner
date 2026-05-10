@@ -164,17 +164,17 @@ for rank, destination in enumerate(sorted_recs, 1): # loop through all recommend
             <div style="color:#ffffff; font-size:1rem; font-weight:600;">{weather['description'].capitalize()}</div>""",
             unsafe_allow_html=True)
 
-    # Travel advisory section — fetches official safety level from Australian Government Smartraveller API
-country_name = destination["country"]
+        # Travel advisory section — fetches official safety level from Australian Government Smartraveller API
+    country_name = destination["country"]
 
-advisory_raw = next(
-    (
-        item for item in all_advisories
-        if country_name.lower() in item["title"].lower()
-        or item["title"].lower() in country_name.lower()
-    ),
-    None
-)
+    advisory_raw = next(
+        (
+            item for item in all_advisories
+            if country_name.lower() in item["title"].lower()
+            or item["title"].lower() in country_name.lower()
+        ),
+        None
+    )
 
     if advisory_raw:  # only process if a matching country was found
         advisory = {
@@ -183,6 +183,7 @@ advisory_raw = next(
         }
     else:
         advisory = None
+
 
     if advisory:  # only display if advisory data was successfully retrieved
         level = advisory["color"]         # severity number: 1=safe, 2=caution, 3=reconsider, 4=do not travel
