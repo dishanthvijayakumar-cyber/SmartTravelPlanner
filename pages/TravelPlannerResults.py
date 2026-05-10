@@ -1,5 +1,6 @@
 import streamlit as st
-from API import get_weather, get_destination_image, get_travel_advisory
+import requests
+from API import get_weather, get_destination_image, get_travel_advisory, get_advisory_color
 from ml_streamlit_integration import show_ml_results_page
 
 # Design: AI-generated
@@ -64,6 +65,18 @@ fig.update_layout(
 )
 st.plotly_chart(fig, use_container_width=True)
 
+@st.cache_data
+def load_all_advisories():
+    """Download all travel advisories once and cache them for the session"""
+    try:
+        response = requests.get("https://www.smartraveller.gov.au/destinations-export")
+        if response.status_code == 200:
+            return response.json()
+    except:
+        pass
+    return []
+
+all_advisories = load_all_advisories()  # load once before the loop
 
 #(Design AI-generated)
 for rank, destination in enumerate(st.session_state.recommendations, 1):  # loop through all recommended destinations, starting rank at 1
@@ -124,10 +137,19 @@ for rank, destination in enumerate(st.session_state.recommendations, 1):  # loop
             unsafe_allow_html=True)
 
     # Travel advisory section — fetches official safety level from Australian Government Smartraveller API
-    advisory = get_travel_advisory(destination["country"])  # call get_travel_advisory with the destination country name
+    advisory_raw = next((item for item in all_advisories if item["title"].lower() == destination["country"].lower()), None)
+
+    if advisory_raw:  # only process if a matching country was found
+        advisory = {
+            "level_text": advisory_raw["field_overall_advice_level"],
+            "color": get_advisory_color(advisory_raw["field_overall_advice_level"])
+        }
+    else:
+        advisory = None
+
     if advisory:  # only display if advisory data was successfully retrieved
-        level = advisory["color"]        # severity number: 1=safe, 2=caution, 3=reconsider, 4=do not travel
-        message = advisory["level_text"] # advisory text e.g. "Exercise a high degree of caution"
+        level = advisory["color"]         # severity number: 1=safe, 2=caution, 3=reconsider, 4=do not travel
+        message = advisory["level_text"]  # advisory text e.g. "Exercise a high degree of caution"
 
         # Color map — each severity level gets a different color for clear visual communication
         colors = {
