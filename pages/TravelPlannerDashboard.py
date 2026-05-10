@@ -117,34 +117,33 @@ all_activities, per_day = get_activities(destination["place"], travel_pace) or (
 offset = (selected_day - 1) * per_day
 recommended = all_activities[offset:offset + per_day] if all_activities else []
 
-if recommended:
-    for i, activity in enumerate(recommended, 1):
-        image_url = get_destination_image(activity["name"])
-        col1, col2 = st.columns([1, 2])
-        with col1:
-            if image_url:
-                st.image(image_url, use_container_width=True)
-        with col2:
-            st.markdown(f"""
-            <div style="background:rgba(255,255,255,0.04); border:1px solid rgba(192,132,252,0.15);
-                 border-radius:14px; padding:18px 20px; margin-bottom:12px;">
-                <div style="display:flex; gap:16px; align-items:flex-start;">
-                    <div style="background:rgba(138,43,226,0.3); border-radius:10px;
-                          width:36px; height:36px; display:flex; align-items:center;
-                          justify-content:center; flex-shrink:0;
-                          font-family:'Playfair Display',serif; font-weight:900; color:#f59e0b;">
-                        {i}
+for i, activity in enumerate(recommended, 1):
+    col1, col2 = st.columns([1, 2])
+    with col1:
+        img_url = get_destination_image(activity["name"]) or get_destination_image(f"{destination['place']} {activity['category']}")
+        if img_url:
+            st.image(img_url, use_container_width=True)
+    with col2:
+        st.markdown(f"""
+        <div style="background:rgba(255,255,255,0.04); border:1px solid rgba(192,132,252,0.15);
+             border-radius:14px; padding:18px 20px; margin-bottom:12px;">
+            <div style="display:flex; gap:16px; align-items:flex-start;">
+                <div style="background:rgba(138,43,226,0.3); border-radius:10px;
+                      width:36px; height:36px; display:flex; align-items:center;
+                      justify-content:center; flex-shrink:0;
+                      font-family:'Playfair Display',serif; font-weight:900; color:#f59e0b;">
+                    {i}
+                </div>
+                <div>
+                    <div style="font-weight:600; color:#ffffff; font-size:1rem; margin-bottom:4px;">
+                        {activity['name']}
                     </div>
-                    <div>
-                        <div style="font-weight:600; color:#ffffff; font-size:1rem; margin-bottom:4px;">
-                            {activity['name']}
-                        </div>
-                        <div style="color:#c084fc; font-size:0.85rem;">📍 {activity['category']}</div>
-                        <div style="color:#9ca3af; font-size:0.82rem; margin-top:2px;">🗺️ {activity['address']}</div>
-                    </div>
+                    <div style="color:#c084fc; font-size:0.85rem;">📍 {activity['category']}</div>
+                    <div style="color:#9ca3af; font-size:0.82rem; margin-top:2px;">🗺️ {activity['address']}</div>
                 </div>
             </div>
-            """, unsafe_allow_html=True)
+        </div>
+        """, unsafe_allow_html=True)
 else:
     st.warning("No activities found for this destination.")
 
