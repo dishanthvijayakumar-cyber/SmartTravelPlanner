@@ -71,7 +71,7 @@ def get_activities(city, activities, travel_pace, travel_duration=7):
     # Call Foursquare API
     try:
         response = requests.get(
-            "https://places-api.foursquare.com/v3/places/search",
+            "https://api.foursquare.com/v3/places/search",
             headers={"Authorization": FOURSQUARE_API_key},
             params={
                 "near": city,
@@ -129,7 +129,7 @@ def get_destination_image(place):
             headers={
                 # We need to tell Unsplash who we are with our API key
                 # The format is always: "Client-ID YOUR_ACCESS_KEY"
-                "Authorization": f"Client-ID {UNSPLASH_ACCESS_KEY}"
+                "Authorization": f"Client-ID {UNSPLASH_ACCESS_key}"
             },
             params={
                 # What to search for - we add "travel landmark" to get better results
