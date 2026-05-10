@@ -3,13 +3,14 @@ import requests #give python access to the internet
 
 API_key = "831bcc60123e44bf868c2ae62826bcd7" #API key from the weather website
 FOURSQUARE_API_key = "fsq3tJKsojVY8gYyK6rnqZ6nMVtqGnG9RHuGVVoyP3n4Gvg=" #API key from foursquare for activities
+UNSPLASH_ACCESS_KEY = "8wlF9Pb5XZUh_zoCcUS8k9eU-mI_zcwI0rcG_OmGlPM" # API key from Unsplash for destination images
 
 def get_weather(city):
   """Fetch current weather for a city from OpenWeatherMap API"""
   
   response = requests.get(
     "https://api.openweathermap.org/data/2.5/weather", # tell python to get the data from that URL
-    params={                                           # settings that we send to the API to tell it exactly what info we want"
+    params={                                           # settings that we send to the API to tell it exactly what info we want
       "q": city,                                       # q for query (request of info), city not a string because it changes value depending on the user's input
       "appid": API_key,                                # inserting the API_key to show that we have permission, appid chosen by openweathermap
       "units": "metric"                                # celsius, units chosen by openweathermap, metric as string because it is fixed unlike city
@@ -37,7 +38,6 @@ def get_weather(city):
 # To use it, you need a free API key from: https://unsplash.com/developers
 # The key below is linked to the SmartTravel account
 
-UNSPLASH_ACCESS_KEY = "8wlF9Pb5XZUh_zoCcUS8k9eU-mI_zcwI0rcG_OmGlPM"
 
 def get_destination_image(place):
     """
