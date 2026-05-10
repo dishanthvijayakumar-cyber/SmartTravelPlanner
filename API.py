@@ -15,7 +15,7 @@ def get_weather(city):
     "https://api.openweathermap.org/data/2.5/weather", # tell python to get the data from that URL
     params={                                           # settings that we send to the API to tell it exactly what info we want
       "q": city,                                       # q for query (request of info), city not a string because it changes value depending on the user's input
-      "appid": Openweather_key,                                # inserting the API_key to show that we have permission, appid chosen by openweathermap
+      "appid": Openweathermap_key,                                # inserting the API_key to show that we have permission, appid chosen by openweathermap
       "units": "metric"                                # celsius, units chosen by openweathermap, metric as string because it is fixed unlike city
     }                                                  # } closes the dictionary whereas ) closes the function call
   )
