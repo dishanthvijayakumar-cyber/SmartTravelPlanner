@@ -35,14 +35,18 @@ h1, h2, h3 { font-family: 'Playfair Display', serif !important; }
 """, unsafe_allow_html=True)
 #end of Design
 
-if "recommendations" not in st.session_state:
+if "preferences" not in st.session_state:
     st.warning("Please complete the questionnaire first!")
-    if st.button ("Go to Questionnaire"):
+    if st.button("Go to Questionnaire"):
         st.switch_page("pages/TravelPlannerQuestionnaire.py")
-    st. stop()
+    st.stop()
+
 
 if st.button("Return Home", icon="🏠"):
     st.switch_page("TravelPlannerDemo.py")
+
+show_ml_results_page(st.session_state.preferences)
+st.stop()
 
 st.title("🎯 Your Top 10 Destinations")
 
