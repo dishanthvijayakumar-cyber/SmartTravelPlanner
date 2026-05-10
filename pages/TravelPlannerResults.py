@@ -141,7 +141,7 @@ for rank, destination in enumerate(st.session_state.recommendations, 1):  # loop
             unsafe_allow_html=True)
 
     # Travel advisory section — fetches official safety level from Australian Government Smartraveller API
-    advisory_raw = next((item for item in all_advisories if item["title"].lower() == destination["country"].lower()), None)
+    advisory_raw = next((item for item in all_advisories if country_name.lower() in item["title"].lower() or item["title"].lower() in country_name.lower()), None)
 
     if advisory_raw:  # only process if a matching country was found
         advisory = {
