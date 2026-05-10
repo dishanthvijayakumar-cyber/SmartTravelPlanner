@@ -103,16 +103,24 @@ for rank, destination in enumerate(st.session_state.recommendations, 1):
     if img_url:
         st.image(img_url, width=300)
     weather = get_weather(destination["place"])
-    if weather: 
-        col1, col2, col3, col4 = st.columns(4)
-        with col1:
-            st.metric("Temperature", str(weather["temp"]) + "°C")
-        with col2:
-            st.metric("Humidity", str(weather["humidity"]) + "%")
-        with col3:
-            st.metric("Wind Speed", str(weather["wind_speed"]) + "m/s")  
-        with col4:
-            st.metric("Conditions", weather["description"].capitalize())
+    if weather:
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        st.markdown(f"""<div style="color:#c084fc; font-size:0.8rem;">Temperature</div>
+        <div style="color:#ffffff; font-size:1rem; font-weight:600;">{weather['temp']}°C</div>""", 
+        unsafe_allow_html=True)
+    with col2:
+        st.markdown(f"""<div style="color:#c084fc; font-size:0.8rem;">Humidity</div>
+        <div style="color:#ffffff; font-size:1rem; font-weight:600;">{weather['humidity']}%</div>""", 
+        unsafe_allow_html=True)
+    with col3:
+        st.markdown(f"""<div style="color:#c084fc; font-size:0.8rem;">Wind Speed</div>
+        <div style="color:#ffffff; font-size:1rem; font-weight:600;">{weather['wind_speed']} m/s</div>""", 
+        unsafe_allow_html=True)
+    with col4:
+        st.markdown(f"""<div style="color:#c084fc; font-size:0.8rem;">Conditions</div>
+        <div style="color:#ffffff; font-size:1rem; font-weight:600;">{weather['description'].capitalize()}</div>""", 
+        unsafe_allow_html=True)
 
     col_l, col_btn, col_r = st.columns([2, 2, 2])
     with col_btn:
