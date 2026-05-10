@@ -154,5 +154,42 @@ def get_destination_image(place):
     # Return None if we couldn't find or fetch any image
     return None
 
+def get_travel_advisory(country):
+    """Fetch official Australian government travel advisory for a country"""
+    
+    try:
+        # Call the Australian government Smartraveller API — no key needed, completely free
+        response = requests.get("https://www.smartraveller.gov.au/destinations-export")
+        
+        if response.status_code == 200:  # check if the request was successful
+            data = response.json()  # convert response to a Python dictionary
+            
+            for item in data:  # loop through all countries in the API response
+                if country.lower() == item["title"].lower():  # find the matching country (case insensitive)
+                    level_text = item["field_overall_advice_level"]  # get the advisory level text e.g. "Do not travel"
+                    details = item.get("field_last_update", "")  # get the latest update details, empty string if not available
+                    return {
+                        "level_text": level_text,  # the advisory message to display
+                        "details": details,         # additional context about the advisory
+                        "color": get_advisory_color(level_text)  # convert text to a severity number for color coding
+                    }
+    except Exception as e:
+        print(f"Advisory error: {e}")  # print error message if something goes wrong without crashing the app
+    
+    return None  # return None if country not found or request failed
 
+
+def get_advisory_color(level_text):
+    """Map advisory text to severity level for color coding"""
+    
+    level_text = level_text.lower()  # convert to lowercase for reliable comparison
+    
+    if "do not travel" in level_text:       # highest risk — red
+        return 4
+    elif "reconsider" in level_text:        # high risk — orange
+        return 3
+    elif "high degree of caution" in level_text:  # medium risk — yellow
+        return 2
+    else:                                   # normal precautions — green
+        return 1
 
