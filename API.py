@@ -80,7 +80,8 @@ def get_activities(city, activities, travel_pace, travel_duration=7):
                 "sort": "RELEVANCE"
             }
         )
-
+        print(response.status_code, response.text)
+      
         if response.status_code == 200:
             data = response.json()
             results = []
