@@ -1,8 +1,8 @@
 import streamlit as st
 import requests #give python access to the internet
 
-Openweathermap_key = "831bcc60123e44bf868c2ae62826bcd7" #API key from the weather website (openweathermap)
-FOURSQUARE_API_key = "ZKZCLUMHW4B0U5P3PZJVIQETLDCIKZT3L2HZF0GPQB2MERPD" #API key from foursquare for activities
+OpenWeatherMap_key = "831bcc60123e44bf868c2ae62826bcd7" #API key from the weather website (OpenWeatherMap)
+OpenTripMap_key = "5ae2e3f221c38a28845f05b68be55a93f0971363cb46027fedab4d83" #API key from OpenTripMap for activities
 UNSPLASH_ACCESS_key = "8wlF9Pb5XZUh_zoCcUS8k9eU-mI_zcwI0rcG_OmGlPM" # API key from Unsplash for destination images
 
 
@@ -15,7 +15,7 @@ def get_weather(city):
     "https://api.openweathermap.org/data/2.5/weather", # tell python to get the data from that URL
     params={                                           # settings that we send to the API to tell it exactly what info we want
       "q": city,                                       # q for query (request of info), city not a string because it changes value depending on the user's input
-      "appid": Openweathermap_key,                                # inserting the API_key to show that we have permission, appid chosen by openweathermap
+      "appid": OpenWeatherMap_key,                                # inserting the API_key to show that we have permission, appid chosen by openweathermap
       "units": "metric"                                # celsius, units chosen by openweathermap, metric as string because it is fixed unlike city
     }                                                  # } closes the dictionary whereas ) closes the function call
   )
@@ -33,24 +33,10 @@ def get_weather(city):
 
 
 
-#Foursquare API for activities per destination
+#OpenTripMap API for activities per destination
 
-def get_activities(city, activities, travel_pace, travel_duration=7):
-    """Fetch recommended activities from Foursquare based on user preferences"""
-
-    # Map questionnaire answers to Foursquare category IDs
-    category_map = {
-        "City Tours": "16000",
-        "Nature Hikes": "16032",
-        "Historical Sites": "16026",
-        "Cultural Experiences (Museums, Local Events)": "10027",
-        "Food & Drink Experiences (Cooking Classes, Wine Tasting)": "13000",
-        "Relaxation (Spas, Beach Days)": "18000",
-        "Adventure Activities (Ziplining, Rafting)": "16032",
-        "Nightlife (Bars, Clubs)": "10032",
-        "Shopping": "17000",
-        "Wildlife Encounters": "16034"
-    }
+def get_activities(city, travel_pace):
+    """Fetch tourist attractions from OpenTripMap for a given city"""
 
     # Map travel pace to number of activities per day
     pace_map = {
@@ -58,44 +44,48 @@ def get_activities(city, activities, travel_pace, travel_duration=7):
         "Moderate: Balance of activities and rest": 3,
         "Packed: See and do as much as possible": 5
     }
-
-    # Get how many activities to return based on pace
     per_day = pace_map.get(travel_pace, 3)
-    limit = per_day * travel_duration
 
-    # Get category IDs matching user's selected activities
-    categories = ",".join([
-        category_map.get(a, "16000") for a in activities
-    ])
+    OpenTripMap_key = "5ae2e3f221c38a28845f05b68be55a93f0971363cb46027fedab4d83"
 
-    # Call Foursquare API
     try:
-        response = requests.get(
-            "https://api.foursquare.com/v3/places/search",
-            headers={"Authorization": FOURSQUARE_API_key},
+        # Step 1 — get coordinates of the city
+        geo = requests.get(
+            "https://api.opentripmap.com/0.1/en/places/geoname",
+            params={"name": city, "apikey": OpenTripMap_key}
+        )
+        geo_data = geo.json()
+        lat = geo_data["lat"]
+        lon = geo_data["lon"]
+
+        # Step 2 — get attractions near those coordinates
+        places = requests.get(
+            "https://api.opentripmap.com/0.1/en/places/radius",
             params={
-                "near": city,
-                "categories": categories,
-                "limit": limit,
-                "sort": "RELEVANCE"
+                "radius": 5000,       # 5km radius
+                "lon": lon,
+                "lat": lat,
+                "kinds": "interesting_places",
+                "limit": per_day * 7, # enough for all days
+                "apikey": OpenTripMap_key
             }
         )
-        print(response.status_code, response.text)
-      
-        if response.status_code == 200:
-            data = response.json()
-            results = []
-            for place in data["results"]:
+        data = places.json()
+        results = []
+        for place in data["features"]:
+            name = place["properties"]["name"]
+            if name:  # skip unnamed places
                 results.append({
-                    "name": place["name"],
-                    "category": place["categories"][0]["name"] if place["categories"] else "Attraction",
-                    "address": place["location"].get("formatted_address", "Address unavailable")
+                    "name": name,
+                    "category": place["properties"].get("kinds", "Attraction").split(",")[0],
+                    "address": city
                 })
-            return results, per_day
-        else:
-            return None, per_day
-    except Exception:
-      return None, per_day
+        return results, per_day
+
+    except Exception as e:
+        print(f"OpenTripMap error: {e}")
+        return None, per_day
+
 
 # ============================================
 # UNSPLASH API FOR DESTINATION IMAGES
