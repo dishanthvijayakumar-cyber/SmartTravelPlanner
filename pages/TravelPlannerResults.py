@@ -1,5 +1,5 @@
 import streamlit as st
-from API import get_weather, get_destination_image
+from API import get_weather, get_destination_image, get_travel_advisory
 from ml_streamlit_integration import show_ml_results_page
 
 # Design: AI-generated
@@ -66,10 +66,11 @@ st.plotly_chart(fig, use_container_width=True)
 
 
 #(Design AI-generated)
-for rank, destination in enumerate(st.session_state.recommendations, 1):
-    score = destination["score"]
-    score_color = "#34d399" if score >= 70 else "#f59e0b" if score >= 40 else "#f87171"
+for rank, destination in enumerate(st.session_state.recommendations, 1):  # loop through all recommended destinations, starting rank at 1
+    score = destination["score"]  # get the match score for this destination
+    score_color = "#34d399" if score >= 70 else "#f59e0b" if score >= 40 else "#f87171"  # green if high score, yellow if medium, red if low
 
+    # Destination card — AI-generated design
     st.markdown(f"""
     <div style="background:rgba(255,255,255,0.05); border:1px solid rgba(192,132,252,0.2);
          border-radius:20px; padding:28px; margin-bottom:8px;">
@@ -96,36 +97,78 @@ for rank, destination in enumerate(st.session_state.recommendations, 1):
     </div>
     """, unsafe_allow_html=True)
 
-    # Try to get a beautiful travel photo from Unsplash for this destination
-    # This searches for images using "{place} travel landmark" as the query
-    img_url = get_destination_image(destination["place"])
-    # Only show the image if we got one back from Unsplash
-    if img_url:
+    # Fetch and display a destination photo from Unsplash API
+    img_url = get_destination_image(destination["place"])  # search Unsplash for a photo of the destination
+    if img_url:  # only display if an image was found
         st.image(img_url, width=300)
-    weather = get_weather(destination["place"])
-    if weather:
-    col1, col2, col3, col4 = st.columns(4)
-    with col1:
-        st.markdown(f"""<div style="color:#c084fc; font-size:0.8rem;">Temperature</div>
-        <div style="color:#ffffff; font-size:1rem; font-weight:600;">{weather['temp']}°C</div>""", 
-        unsafe_allow_html=True)
-    with col2:
-        st.markdown(f"""<div style="color:#c084fc; font-size:0.8rem;">Humidity</div>
-        <div style="color:#ffffff; font-size:1rem; font-weight:600;">{weather['humidity']}%</div>""", 
-        unsafe_allow_html=True)
-    with col3:
-        st.markdown(f"""<div style="color:#c084fc; font-size:0.8rem;">Wind Speed</div>
-        <div style="color:#ffffff; font-size:1rem; font-weight:600;">{weather['wind_speed']} m/s</div>""", 
-        unsafe_allow_html=True)
-    with col4:
-        st.markdown(f"""<div style="color:#c084fc; font-size:0.8rem;">Conditions</div>
-        <div style="color:#ffffff; font-size:1rem; font-weight:600;">{weather['description'].capitalize()}</div>""", 
-        unsafe_allow_html=True)
 
-    col_l, col_btn, col_r = st.columns([2, 2, 2])
-    with col_btn:
-        if st.button(f"🗺️  Plan this trip", key=f"btn_{rank}", use_container_width=True):
-            st.session_state.selected_destination = destination
-            st.switch_page("pages/TravelPlannerDashboard.py")
-    
-    st.markdown("---")
+    # Weather section — fetches live weather data from OpenWeatherMap API for each destination
+    weather = get_weather(destination["place"])  # call get_weather function with the destination city name
+    if weather:  # only display if weather data was successfully retrieved
+        col1, col2, col3, col4 = st.columns(4)  # create 4 columns for weather metrics
+        with col1:  # temperature column
+            st.markdown(f"""<div style="color:#c084fc; font-size:0.8rem;">Temperature</div>
+            <div style="color:#ffffff; font-size:1rem; font-weight:600;">{weather['temp']}°C</div>""",
+            unsafe_allow_html=True)
+        with col2:  # humidity column
+            st.markdown(f"""<div style="color:#c084fc; font-size:0.8rem;">Humidity</div>
+            <div style="color:#ffffff; font-size:1rem; font-weight:600;">{weather['humidity']}%</div>""",
+            unsafe_allow_html=True)
+        with col3:  # wind speed column
+            st.markdown(f"""<div style="color:#c084fc; font-size:0.8rem;">Wind Speed</div>
+            <div style="color:#ffffff; font-size:1rem; font-weight:600;">{weather['wind_speed']} m/s</div>""",
+            unsafe_allow_html=True)
+        with col4:  # conditions column
+            st.markdown(f"""<div style="color:#c084fc; font-size:0.8rem;">Conditions</div>
+            <div style="color:#ffffff; font-size:1rem; font-weight:600;">{weather['description'].capitalize()}</div>""",
+            unsafe_allow_html=True)
+
+    # Travel advisory section — fetches official safety level from Australian Government Smartraveller API
+    advisory = get_travel_advisory(destination["country"])  # call get_travel_advisory with the destination country name
+    if advisory:  # only display if advisory data was successfully retrieved
+        level = advisory["color"]        # severity number: 1=safe, 2=caution, 3=reconsider, 4=do not travel
+        message = advisory["level_text"] # advisory text e.g. "Exercise a high degree of caution"
+
+        # Color map — each severity level gets a different color for clear visual communication
+        colors = {
+            1: "#34d399",  # green — normal precautions
+            2: "#f59e0b",  # yellow — high degree of caution
+            3: "#f97316",  # orange — reconsider travel
+            4: "#f87171"   # red — do not travel
+        }
+        color = colors.get(level, "#9ca3af")  # get color for this level, grey as fallback if level not found
+
+        # Display advisory as a colored card — AI-generated design
+        st.markdown(f"""
+        <div style="background:rgba(255,255,255,0.04); border:1px solid {color}50;
+             border-radius:12px; padding:12px 16px; margin-top:8px;">
+            <div style="color:{color}; font-weight:600; font-size:0.9rem;">
+                🛡️ Travel Advisory: {message}
+            </div>
+            <div style="color:#9ca3af; font-size:0.75rem; margin-top:4px;">
+                Source: Australian Government Smartraveller
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+    else:
+        # If no advisory found for this country, show a neutral placeholder instead of nothing
+        st.markdown("""
+        <div style="background:rgba(255,255,255,0.04); border:1px solid rgba(156,163,175,0.3);
+             border-radius:12px; padding:12px 16px; margin-top:8px;">
+            <div style="color:#9ca3af; font-size:0.9rem;">
+                🛡️ Travel Advisory: No advisory data available for this destination
+            </div>
+            <div style="color:#9ca3af; font-size:0.75rem; margin-top:4px;">
+                Source: Australian Government Smartraveller
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    # Plan this trip button — saves selected destination to session state and navigates to dashboard
+    col_l, col_btn, col_r = st.columns([2, 2, 2])  # create 3 columns to center the button
+    with col_btn:  # place button in the middle column
+        if st.button(f"🗺️  Plan this trip", key=f"btn_{rank}", use_container_width=True):  # unique key per destination to avoid conflicts
+            st.session_state.selected_destination = destination  # save chosen destination to session state for use in dashboard
+            st.switch_page("pages/TravelPlannerDashboard.py")  # navigate to the dashboard page
+
+    st.markdown("---")  # divider line between each destination card
