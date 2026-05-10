@@ -1,7 +1,11 @@
 import streamlit as st
 import requests
 from API import get_weather, get_destination_image, get_travel_advisory, get_advisory_color
-from ml_streamlit_integration import show_ml_results_page
+from ml_travel_recommender import (
+    load_project_destinations,
+    predict_destination_scores,
+    train_match_model,
+)
 
 # Design: AI-generated
 st.markdown("""
@@ -45,16 +49,36 @@ if "preferences" not in st.session_state:
 if st.button("Return Home", icon="🏠"):
     st.switch_page("TravelPlannerDemo.py")
 
-show_ml_results_page(st.session_state.preferences)
-st.stop()
-
 st.title("🎯 Your Top 10 Destinations")
+
 
 
 #Chart top 10 destinations
 import plotly.express as px
 
-sorted_recs = sorted(st.session_state.recommendations, key=lambda x: x["score"], reverse=True)
+# Load all destinations and rank them with the ML model
+destinations = load_project_destinations()
+model_bundle = train_match_model(destinations)
+
+ml_scores = predict_destination_scores(
+    st.session_state.preferences,
+    destinations,
+    model_bundle,
+)
+
+score_map = dict(zip(ml_scores["destination"], ml_scores["ml_match_score"]))
+
+sorted_recs = []
+for destination in destinations:
+    place = destination["place"]
+    ml_score = score_map.get(place, 0)
+
+    destination["score"] = ml_score
+    destination["ml_match_score"] = ml_score
+    sorted_recs.append(destination)
+
+sorted_recs = sorted(sorted_recs, key=lambda x: x["ml_match_score"], reverse=True)[:10]
+
 
 fig = px.bar(
     x=[r["place"] for r in sorted_recs],
@@ -83,7 +107,7 @@ def load_all_advisories():
 all_advisories = load_all_advisories()  # load once before the loop
 
 #(Design AI-generated)
-for rank, destination in enumerate(st.session_state.recommendations, 1):  # loop through all recommended destinations, starting rank at 1
+for rank, destination in enumerate(sorted_recs, 1): # loop through all recommended destinations, starting rank at 1
     score = destination["score"]  # get the match score for this destination
     score_color = "#34d399" if score >= 70 else "#f59e0b" if score >= 40 else "#f87171"  # green if high score, yellow if medium, red if low
 
