@@ -82,13 +82,21 @@ weather = get_weather(destination["place"]) #gets the weather for the selected d
 if weather:
     col1, col2, col3, col4 = st.columns(4) #creates four columns to display different weather metrics
     with col1: #defines column 1 content
-        st.metric("Temperature", f"{weather['temp']}°C") # displays the temperature in column 1 under a metric component, formatted as the temperature with a degree Celsius symbol
-    with col2: #defines column 2 content
-        st.metric("Humidity", f"{weather['humidity']}%") # displays the humidity in column 2 under a metric component, formatted as the humidity with a percentage symbol
-    with col3: #defines column 3 content
-        st.metric("Wind Speed", f"{weather['wind_speed']} m/s") # displays the wind speed in column 3 under a metric component, formatted as the wind speed with m/s for meters per second
-    with col4: #defines column 4 content
-        st.metric("Conditions", weather['description'].capitalize()) # displays the weather conditions in column 4 under a metric component, with the description text capitalized for better formatting
+        st.markdown(f"""<div style="color:#c084fc; font-size:0.8rem;">Temperature</div> 
+        <div style="color:#ffffff; font-size:1rem; font-weight:600;">{weather['temp']}°C</div>""", 
+        unsafe_allow_html=True)    # displays the temperature in column 1 under a markdown component, formatted as the temperature with a degree Celsius symbol
+    with col2:    #defines column 2 content
+        st.markdown(f"""<div style="color:#c084fc; font-size:0.8rem;">Humidity</div>
+        <div style="color:#ffffff; font-size:1rem; font-weight:600;">{weather['humidity']}%</div>""", 
+        unsafe_allow_html=True)    # displays the humidity in column 2 under a markdown component, formatted as the humidity with a percentage symbol
+    with col3:    #defines column 3 content
+        st.markdown(f"""<div style="color:#c084fc; font-size:0.8rem;">Wind Speed</div>
+        <div style="color:#ffffff; font-size:1rem; font-weight:600;">{weather['wind_speed']} m/s</div>""", 
+        unsafe_allow_html=True)    # displays the wind speed in column 3 under a markdown component, formatted as the wind speed with m/s for meters per second
+    with col4:    #defines column 4 content
+        st.markdown(f"""<div style="color:#c084fc; font-size:0.8rem;">Conditions</div>
+        <div style="color:#ffffff; font-size:1rem; font-weight:600;">{weather['description'].capitalize()}</div>""", 
+        unsafe_allow_html=True)    # displays the weather conditions in column 4 under a markdown component, with the description text capitalized for better formatting
 else: 
     st.warning("Weather data unavailable for this destination") # if the weather variable is empty or none, shows a warning that weather data is unavailable for the destination
 
