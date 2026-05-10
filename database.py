@@ -1,21 +1,20 @@
-import sqlite3
+import sqlite3 #Import the built-in SQLite library to interact with .db database files
 
-with open('destinations.sql', 'r') as f: #according to the slides
-    sql_script = f.read()
+with open('destinations.sql', 'r') as f: #According to the slides: open the SQL script file in read mode
+    sql_script = f.read() #Read the entire SQL file content into a string variable
 
-connection = sqlite3.connect('destinations.db')
-connection.executescript(sql_script)
-connection.commit()
+connection = sqlite3.connect('destinations.db') #Open the SQLite database file
+connection.executescript(sql_script) #Run all SQL statements in the script to set up tables and data
+connection.commit() #Save all changes made by the script to the database
 
-connection = sqlite3.connect('destinations.db')
+connection = sqlite3.connect('destinations.db') #Reconnect to the database for subsequent use
 
 
-def get_destinations(): #AI-generated 
-    # Connect to the SQLite database file
-    conn = sqlite3.connect('destinations.db')
-    #Allow accessing columns by name instead of index
-    conn.row_factory = sqlite3.Row
-    cursor = conn.cursor()
+#AI-generated: function that retrieves all destinations with their tags
+def get_destinations():  
+    conn = sqlite3.connect('destinations.db') #Connect to the SQLite database file
+    conn.row_factory = sqlite3.Row #Allow accessing columns by name instead of index
+    cursor = conn.cursor() #Create a cursor object used to execute SQL queries
 
     #Report all destinations from the destinations table
     cursor.execute("SELECT * FROM destinations")
