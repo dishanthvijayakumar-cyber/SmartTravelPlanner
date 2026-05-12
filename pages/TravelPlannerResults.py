@@ -1,10 +1,10 @@
 import streamlit as st
-import requests  # needed for potential future API calls
+import requests  # gives Python internet access for API calls
 from API import get_weather, get_destination_image  # import weather and image functions from API module
 from ml_charts import (
-    create_top3_radar_chart,
-    create_criteria_heatmap,
-    create_score_distribution_chart,
+    create_top3_radar_chart,            # radar chart comparing top 3 destinations across criteria
+    create_criteria_heatmap,            # heatmap showing how destinations score on each criterion
+    create_score_distribution_chart,    # chart showing distribution of match scores
 )
 
 from ml_travel_recommender import (
@@ -12,22 +12,22 @@ from ml_travel_recommender import (
     predict_destination_scores,   # scores each destination based on user preferences
     train_match_model,            # trains the ML model on destination data
 )
-@st.cache_data
+@st.cache_data                    # cache the destinations so the database is only queried once per session (less time-consuming)
 def load_destinations_cached():
-    return load_project_destinations()
+    return load_project_destinations()    # load all destinations from the SQL database
 
-@st.cache_resource
+@st.cache_resource                # cache the trained model as a shared resource — more efficient than cache_data for ML models
 def train_model_cached():
-    destinations = load_destinations_cached()
-    return train_match_model(destinations)
+    destinations = load_destinations_cached()    # load destinations to train on
+    return train_match_model(destinations)       # train and return the ML model
 
-@st.cache_data(ttl=3600)
+@st.cache_data(ttl=3600)          # cache weather data for 1 hour — weather changes but not every second
 def cached_weather(place):
-    return get_weather(place)
+    return get_weather(place)     # fetch live weather from OpenWeatherMap API for the given place
 
-@st.cache_data(ttl=86400)
-def cached_destination_image(place):
-    return get_destination_image(place)
+@st.cache_data(ttl=86400)                        # cache images for 24 hours (86400 seconds), photos rarely change
+def cached_destination_image(place):             
+    return get_destination_image(place)          # fetch destination photo from Unsplash API
 
 # ============================================================
 # TRAVEL ADVISORY DATA — US State Department (May 2026)
@@ -35,6 +35,7 @@ def cached_destination_image(place):
 # Risk indicators: C=Crime, T=Terrorism, U=Civil Unrest, H=Health,
 #                  N=Natural Disaster, K=Kidnapping, D=Wrongful Detention, O=Other
 # ============================================================
+
 TRAVEL_ADVISORIES = {
     # Level 1 — Exercise normal precautions
     "Australia":        (1, "Exercise normal precautions", []),
