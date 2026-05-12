@@ -68,7 +68,7 @@ def get_activities(city, travel_pace):
                 "lon": lon,           # longitude of city center
                 "lat": lat,           # latitude of city center
                 "kinds": "interesting_places",    # category of places to fetch (general tourist attractions)
-                "limit": per_day * 7, # fetch enough activities for all 7 days of the trip
+                "limit": per_day * 14, # fetch enough activities for all 14 days of the trip
                 "apikey": OpenTripMap_key  # API key for authentication
             }
         )
