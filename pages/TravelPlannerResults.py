@@ -6,6 +6,22 @@ from ml_travel_recommender import (
     predict_destination_scores,   # scores each destination based on user preferences
     train_match_model,            # trains the ML model on destination data
 )
+@st.cache_data
+def load_destinations_cached():
+    return load_project_destinations()
+
+@st.cache_resource
+def train_model_cached():
+    destinations = load_destinations_cached()
+    return train_match_model(destinations)
+
+@st.cache_data(ttl=3600)
+def cached_weather(place):
+    return get_weather(place)
+
+@st.cache_data(ttl=86400)
+def cached_destination_image(place):
+    return get_destination_image(place)
 
 # ============================================================
 # TRAVEL ADVISORY DATA — US State Department (May 2026)
@@ -261,8 +277,9 @@ st.title("🎯 Your Top 10 Destinations")  # page title
 # ============================================================
 import plotly.express as px  # import plotly for bar chart visualization
 
-destinations = load_project_destinations()  # load all destinations from the database
-model_bundle = train_match_model(destinations)  # train the ML model on destination data
+destinations = load_destinations_cached()  # load cached destinations
+model_bundle = train_model_cached()  # use cached trained ML model
+
 
 # score each destination based on user preferences using the ML model
 ml_scores = predict_destination_scores(
@@ -338,12 +355,12 @@ for rank, destination in enumerate(sorted_recs, 1):  # loop through top 10, star
     """, unsafe_allow_html=True)
 
     # fetch and display destination photo from Unsplash API
-    img_url = get_destination_image(destination["place"])  # search Unsplash for destination photo
+    img_url = cached_destination_image(destination["place"])  # cached Unsplash image
     if img_url:  # only show image if one was found
         st.image(img_url, width=300)
 
     # weather section — fetches live data from OpenWeatherMap API
-    weather = get_weather(destination["place"])  # call get_weather with destination city name
+    weather = cached_weather(destination["place"])  # cached weather data
     if weather:  # only display if weather data was successfully retrieved
         col1, col2, col3, col4 = st.columns(4)  # 4 columns for weather metrics
         with col1:  # temperature
