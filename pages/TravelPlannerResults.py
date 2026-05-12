@@ -1,6 +1,12 @@
 import streamlit as st
 import requests  # needed for potential future API calls
 from API import get_weather, get_destination_image  # import weather and image functions from API module
+from ml_charts import (
+    create_top3_radar_chart,
+    create_criteria_heatmap,
+    create_score_distribution_chart,
+)
+
 from ml_travel_recommender import (
     load_project_destinations,    # loads all destinations from the database
     predict_destination_scores,   # scores each destination based on user preferences
@@ -319,6 +325,21 @@ fig.update_layout(
     yaxis_title="Score",             # y axis label
 )
 st.plotly_chart(fig, use_container_width=True)  # display chart full width
+
+# This radar chart compares the strongest matching criteria for the Top 3 ML-ranked destinations.
+# Different line styles and markers help distinguish destinations even when their values overlap.
+st.subheader("Top 3 ML Criteria Radar")
+st.plotly_chart(create_top3_radar_chart(ml_scores), use_container_width=True)
+
+# This heatmap shows how well the best destinations match each individual questionnaire criterion.
+# Darker colors indicate stronger matches, while the numbers make the scores easy to compare.
+st.subheader("Top 5 ML Criteria Heatmap")
+st.plotly_chart(create_criteria_heatmap(ml_scores), use_container_width=True)
+
+# This chart shows how the ML match scores decrease across the ranked destination list.
+# It helps users understand whether the top recommendation is clearly better or only slightly ahead.
+st.subheader("ML Score Distribution")
+st.plotly_chart(create_score_distribution_chart(ml_scores), use_container_width=True)
 
 # ============================================================
 # DESTINATION LOOP — display each recommended destination
