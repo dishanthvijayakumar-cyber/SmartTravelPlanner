@@ -417,7 +417,7 @@ def save_trained_model(model_bundle, model_path=MODEL_FILE):
     - simple evaluation metrics
     """
 
-    joblib.dump(model_bundle, model_path)
+    joblib.dump(model_bundle, model_path, compress=3)
 
 
 def load_saved_model(model_path=MODEL_FILE):
