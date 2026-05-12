@@ -348,7 +348,7 @@ def create_random_user_profile():
     }
 
 
-def create_training_data(destinations, number_of_users=700):
+def create_training_data(destinations, number_of_users=150):
     """
     Generate training rows from random users and all destinations.
     """
@@ -389,7 +389,7 @@ def train_match_model(destinations=None):
     )
 
     model = RandomForestRegressor(
-        n_estimators=120,
+        n_estimators=40,
         random_state=RANDOM_SEED,
     )
     model.fit(X_train, y_train)
