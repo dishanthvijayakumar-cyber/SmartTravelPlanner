@@ -138,7 +138,9 @@ def create_criteria_heatmap(ml_scores):
             texttemplate="%{text:.0f}",
             # Black text is intentionally used here so the score labels stay readable.
             textfont=dict(color="black", size=13),
-            colorbar=dict(title="Score", tickfont=dict(color=WHITE), titlefont=dict(color=WHITE)),
+            # Some older Plotly versions do not support "titlefont" directly on colorbar.
+            # Keeping only "title" and "tickfont" avoids compatibility errors.
+            colorbar=dict(title="Score", tickfont=dict(color=WHITE)),
             hovertemplate="<b>%{y}</b><br>%{x}: %{z:.1f}/100<extra></extra>",
         )
     )
