@@ -51,6 +51,16 @@ TRAVEL_ADVISORIES = {
     "Botswana":         (1, "Exercise normal precautions", []),
     "Namibia":          (1, "Exercise normal precautions", []),
     "Rwanda":           (1, "Exercise normal precautions", []),
+    "Monaco":           (1, "Exercise normal precautions", []),
+    "Andorra":          (1, "Exercise normal precautions", []),
+    "Seychelles":       (1, "Exercise normal precautions", []),
+    "Mauritius":        (1, "Exercise normal precautions", []),
+    "Cape Verde":       (1, "Exercise normal precautions", []),
+    "Samoa":            (1, "Exercise normal precautions", []),
+    "New Caledonia":    (1, "Exercise normal precautions", []),
+    "Aruba":            (1, "Exercise normal precautions", []),
+    "Curaçao":          (1, "Exercise normal precautions", []),
+    "Bonaire":          (1, "Exercise normal precautions", []),
 
     # Level 2 — Exercise increased caution
     "USA":                      (2, "Exercise increased caution", ["C", "T"]),
@@ -120,6 +130,16 @@ TRAVEL_ADVISORIES = {
     "Armenia":                  (2, "Exercise increased caution", ["C"]),
     "Kazakhstan":               (2, "Exercise increased caution", ["C", "T"]),
     "Uzbekistan":               (2, "Exercise increased caution", ["C", "T"]),
+    "Azerbaijan":               (2, "Exercise increased caution", ["C", "U"]),
+    "Ivory Coast":              (2, "Exercise increased caution", ["C", "T"]),
+    "Madagascar":               (2, "Exercise increased caution", ["C"]),
+    "Vanuatu":                  (2, "Exercise increased caution", ["C", "N"]),
+    "Dominican Republic":       (2, "Exercise increased caution", ["C"]),
+    "Tibet":                    (2, "Exercise increased caution", ["D", "O"]),
+    "Malawi":                   (2, "Exercise increased caution", ["C"]),
+    "Burundi":                  (2, "Exercise increased caution", ["C", "U"]),
+    "Greenland":                (2, "Exercise increased caution", ["N"]),
+    "Argentina/Chile":          (2, "Exercise increased caution", ["C"]),
 
     # Level 3 — Reconsider travel
     "Pakistan":                     (3, "Reconsider travel", ["T", "C", "K"]),
