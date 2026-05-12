@@ -105,6 +105,7 @@ def load_all_advisories():
     return []
 
 all_advisories = load_all_advisories()  # load once before the loop
+st.write(f"Advisories loaded: {len(all_advisories)}")  # temporary debug line
 
 #(Design AI-generated)
 for rank, destination in enumerate(sorted_recs, 1): # loop through all recommended destinations, starting rank at 1
