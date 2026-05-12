@@ -261,9 +261,10 @@ INSERT INTO destinations (place, country, climate, budget_min, budget_max, descr
 ('Recife', 'Brazil', 'Tropical', 80, 220, 'Northeastern beach city', 'Beach travelers', 'Moderate'),
 ('Fortaleza', 'Brazil', 'Tropical', 80, 220, 'Sunny coastal city', 'Party beach', 'Moderate'),
 ('Natal', 'Brazil', 'Tropical', 80, 220, 'Dune-filled coastline', 'Nature + beach', 'Relaxed'),
-('Aruba', 'Netherlands', 'Tropical', 150, 400, 'Caribbean luxury island', 'Luxury beach', 'Relaxed'),
-('Curacao', 'Netherlands', 'Tropical', 120, 350, 'Colorful Caribbean island', 'Divers', 'Relaxed'),
-('Bonaire', 'Netherlands', 'Tropical', 120, 350, 'Top diving destination', 'Divers', 'Relaxed');
+('Aruba', 'Aruba', 'Tropical', 150, 400, 'Caribbean luxury island', 'Luxury beach', 'Relaxed'),
+('Curaçao', 'Curaçao', 'Tropical', 120, 350, 'Colorful Caribbean island', 'Divers', 'Relaxed'),
+('Bonaire', 'Bonaire', 'Tropical', 120, 350, 'Top diving destination', 'Divers', 'Relaxed');
+
 
 -- Creation of the tags' table
 CREATE TABLE destination_tags (
