@@ -116,22 +116,33 @@ for i, col in enumerate(day_cols, 1): # Loops through each day column and create
 selected_day = st.session_state.selected_day # Gets the selected day from session state
 st.subheader(f"Day {selected_day} schedule") # Displays a subheader for the selected day, showing "Day X schedule" where X is the selected day number
 
-# Fetch activities based on user preferences and selected destination
+# get user's selected activities from questionnaire preferences, default to empty list if not found
 activities_prefs = st.session_state.preferences.get("activities", []) if "preferences" in st.session_state else []
+# get user's travel pace from questionnaire preferences, default to moderate if not found
 travel_pace = st.session_state.preferences.get("travel_pace", "Moderate: Balance of activities and rest") if "preferences" in st.session_state else "Moderate: Balance of activities and rest"
 
+# fetch all activities for the destination from OpenTripMap API based on travel pace
+# returns a list of all activities and the number of activities per day
+# if the API call fails, default to empty list and 3 activities per day
 all_activities, per_day = get_activities(destination["place"], travel_pace) or ([], 3)
 
+# calculate which activities to show for the selected day
+# e.g. Day 1 starts at index 0, Day 2 starts at index per_day, Day 3 at index per_day*2 etc.
 offset = (selected_day - 1) * per_day
+# slice the full activity list to get only the activities for the selected day
+# if all_activities is None or empty, default to empty list
 recommended = all_activities[offset:offset + per_day] if all_activities else []
 
+# loop through each activity for the selected day, starting index at 1 for display
 for i, activity in enumerate(recommended, 1):
-    col1, col2 = st.columns([1, 2])
+    col1, col2 = st.columns([1, 2])    # create two columns with image on the left (1) and info on the right (2)
     with col1:
+        # try to get an image using the activity name first
+        # if no image is found, fall back to searching city + category (e.g. "Paris fountains")
         img_url = get_destination_image(activity["name"]) or get_destination_image(f"{destination['place']} {activity['category']}")
-        if img_url:
+        if img_url:    # only display image if one was successfully found
             st.image(img_url, use_container_width=True)
-    with col2:
+    with col2:    # activity info goes in the right column
         st.markdown(f"""
         <div style="background:rgba(255,255,255,0.04); border:1px solid rgba(192,132,252,0.15);
              border-radius:14px; padding:18px 20px; margin-bottom:12px;">
