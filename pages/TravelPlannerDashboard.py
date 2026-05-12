@@ -152,7 +152,5 @@ for i, activity in enumerate(recommended, 1):
             </div>
         </div>
         """, unsafe_allow_html=True)
-else:
-    st.warning("No activities found for this destination.")
 
     
