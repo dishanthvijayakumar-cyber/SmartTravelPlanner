@@ -1,5 +1,6 @@
 import random
 
+import joblib
 import pandas as pd
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_absolute_error, r2_score
@@ -12,6 +13,7 @@ from sklearn.model_selection import train_test_split
 
 
 RANDOM_SEED = 42
+MODEL_FILE = "travel_match_model.joblib"
 
 CLIMATE_MAP = {
     "Cold": "cold",
@@ -403,6 +405,31 @@ def train_match_model(destinations=None):
         "feature_columns": list(X.columns),
         "metrics": metrics,
     }
+
+
+def save_trained_model(model_bundle, model_path=MODEL_FILE):
+    """
+    Save the trained RandomForestRegressor bundle to disk.
+
+    The bundle contains:
+    - the trained model
+    - the feature column order
+    - simple evaluation metrics
+    """
+
+    joblib.dump(model_bundle, model_path)
+
+
+def load_saved_model(model_path=MODEL_FILE):
+    """
+    Load a pre-trained model from disk.
+
+    This is the fast path for the Streamlit Results page. Instead of training
+    the RandomForestRegressor while the user waits, the app only loads the
+    already trained model file and immediately predicts scores.
+    """
+
+    return joblib.load(model_path)
 
 
 def predict_destination_scores(questionnaire_preferences, destinations=None, model_bundle=None):
