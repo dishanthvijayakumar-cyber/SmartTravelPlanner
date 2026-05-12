@@ -1,10 +1,12 @@
 import plotly.graph_objects as go
 
 
-# This file contains the ML result charts used on TravelPlannerResults.py.
-# The charts use Plotly because it fits the existing Results page and keeps the
-# visual style close to the current purple SmartTravel design.
+# This file contains only chart-building functions for the ML results section.
+# Keeping the visualizations in a separate file makes TravelPlannerResults.py
+# easier to read and keeps the ML charts reusable.
 
+# These columns are created by predict_destination_scores() in ml_travel_recommender.py.
+# Each value represents how well one questionnaire area matches a destination.
 CRITERIA_COLUMNS = [
     "budget_score",
     "climate_score",
@@ -15,6 +17,7 @@ CRITERIA_COLUMNS = [
     "pace_score",
 ]
 
+# Short labels for the chart axes. They are easier to read than the raw column names.
 CRITERIA_LABELS = [
     "Budget",
     "Climate",
@@ -25,6 +28,7 @@ CRITERIA_LABELS = [
     "Pace",
 ]
 
+# Shared colors for a consistent SmartTravel look across all ML charts.
 BACKGROUND = "#1a0030"
 PAPER = "rgba(0,0,0,0)"
 PURPLE = "#8a2be2"
@@ -36,25 +40,33 @@ WHITE = "#ffffff"
 
 def create_top3_radar_chart(ml_scores):
     """
-    Create a radar chart for the Top-3 ML destinations.
+    Create a radar chart that compares the Top-3 ML-ranked destinations.
 
-    The line styles are intentionally different so that overlapping destinations
-    are still readable: solid, dashed, dotted, with visible markers.
+    The chart uses the individual criterion scores instead of only the final
+    ML match score. This helps users understand why a destination was ranked
+    highly, for example because it fits budget, climate, or activities well.
     """
 
+    # The DataFrame is already sorted by ML score before it reaches this chart.
     top_3 = ml_scores.head(3)
     fig = go.Figure()
 
+    # Different colors and line styles make overlapping radar lines easier to see.
     colors = [ORANGE, LIGHT_PURPLE, PINK]
     dashes = ["solid", "dash", "dot"]
 
     for index, (_, row) in enumerate(top_3.iterrows()):
+        # Read all criterion scores for one destination.
         values = [row[column] for column in CRITERIA_COLUMNS]
+
+        # The first value is repeated at the end so the radar shape closes.
+        closed_values = values + [values[0]]
+        closed_labels = CRITERIA_LABELS + [CRITERIA_LABELS[0]]
 
         fig.add_trace(
             go.Scatterpolar(
-                r=values + [values[0]],
-                theta=CRITERIA_LABELS + [CRITERIA_LABELS[0]],
+                r=closed_values,
+                theta=closed_labels,
                 name=f"{row['destination']} ({row['ml_match_score']}/100)",
                 mode="lines+markers",
                 line=dict(color=colors[index], width=4, dash=dashes[index]),
@@ -64,6 +76,7 @@ def create_top3_radar_chart(ml_scores):
             )
         )
 
+    # The dark layout matches the existing Results page design.
     fig.update_layout(
         title="Top 3 ML Criteria Comparison",
         paper_bgcolor=PAPER,
@@ -99,9 +112,10 @@ def create_top3_radar_chart(ml_scores):
 
 def create_criteria_heatmap(ml_scores):
     """
-    Create a heatmap for the Top-5 destinations and their ML criterion scores.
+    Create a heatmap for the Top-5 destinations and their criterion scores.
 
-    The numbers are black for readability, as requested.
+    This chart is useful because users can quickly compare which destination
+    performs best for each individual questionnaire category.
     """
 
     top_5 = ml_scores.head(5)
@@ -122,6 +136,7 @@ def create_criteria_heatmap(ml_scores):
             zmax=100,
             text=z_values,
             texttemplate="%{text:.0f}",
+            # Black text is intentionally used here so the score labels stay readable.
             textfont=dict(color="black", size=13),
             colorbar=dict(title="Score", tickfont=dict(color=WHITE), titlefont=dict(color=WHITE)),
             hovertemplate="<b>%{y}</b><br>%{x}: %{z:.1f}/100<extra></extra>",
@@ -144,7 +159,10 @@ def create_criteria_heatmap(ml_scores):
 
 def create_score_distribution_chart(ml_scores):
     """
-    Show how strongly the ML score drops across the ranked destinations.
+    Show how the ML match score changes across the ranked destinations.
+
+    If the line drops strongly, the first destination is clearly better than
+    the rest. If it stays flat, several destinations are similarly suitable.
     """
 
     ranked = ml_scores.reset_index(drop=True).copy()
