@@ -151,8 +151,8 @@ for activity in activities: #iterates through the list of selected activities
 #Slider Travel Duration
 st.subheader("8. How long would you stay?")
 
-duration_options = [1, 2, 3, 4, 5, 6, 7, 10, 14, 21, 30, 45, 60, 90, 120, 180, 270, 365] #the different duration options in days for the travel duration slider
-labels = ["1d","2d","3d","4d","5d","6d","1w","10d","2w","3w","1m","45d","2m","3m","4m","6m","9m","1y"] #labels for each duration option that will be shownon the slider instead of the days
+duration_options = [1, 2, 3, 4, 5, 6, 7, 10, 14] #the different duration options in days for the travel duration slider
+labels = ["1d","2d","3d","4d","5d","6d","1w","10d","2w"] #labels for each duration option that will be shownon the slider instead of the days
 
 if "preferences" in st.session_state and "travel_duration" in st.session_state.preferences: # check if travel duration was previously saved in preferences
     saved = st.session_state.preferences["travel_duration"] # use the saved travel duration from preferences if it exists
@@ -166,16 +166,12 @@ travel_duration = duration_options[selected_index] # sets the travel_duration va
 # Badge
 if travel_duration < 7: #if the selected travel duration is less than 7 days,
     dur_label = f"{travel_duration} days" #the dur_label variable is set to the number of days followed by "days"
-elif travel_duration < 30: #if the selected travel duration is less than 30 days but greater than or equal to 7 days,
+else: #if the selected travel duration is 7 days or more,
     weeks = round(travel_duration / 7, 1) #the number of weeks is calculated by dividing the travel duration in days by 7 and rounding to 1 decimal place, 
     dur_label = f"{weeks} weeks" # then the dur_label variable is set to the number of weeks followed by "weeks"
-elif travel_duration < 365: #if the selected travel duration is less than 365 days but greater than or equal to 30 days,
-    months = round(travel_duration / 30, 1) #the number of months is calculated by dividing the travel duration in days by 30 and rounding to 1 decimal place,
-    dur_label = f"{months} months" # then the dur_label variable is set to the number of months followed by "months"
-else:
-    dur_label = "1 year" #final option if the selected travel duration is 365 days or more, the dur_label variable is set to "1 year"
 
-#goal of the badge code is to have all possible travel durations displayed in a more user-friendly format (not just a linear number of days)
+#goal of the label + badge code is to have all possible travel durations displayed in a more user-friendly format (not just a linear number of days)
+
 
 #Design: AI-generated
 st.markdown(f""" 
