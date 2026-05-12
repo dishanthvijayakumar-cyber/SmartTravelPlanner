@@ -23,8 +23,8 @@ CRITERIA_LABELS = [
     "Budget",
     "Climate",
     "Style",
-    "Interests",
-    "Activities",
+    "Interest",
+    "Activity",
     "Pace",
 ]
 
@@ -150,6 +150,7 @@ def create_top3_separate_radar_charts(ml_scores):
     fig = make_subplots(
         rows=1,
         cols=3,
+        horizontal_spacing=0.15,
         specs=[[{"type": "polar"}, {"type": "polar"}, {"type": "polar"}]],
         subplot_titles=[
             f"{row.destination}<br>{row.ml_match_score}/100"
@@ -206,8 +207,8 @@ def create_top3_separate_radar_charts(ml_scores):
         polar=polar_layout,
         polar2=polar_layout,
         polar3=polar_layout,
-        margin=dict(l=40, r=40, t=100, b=40),
-        height=520,
+        margin=dict(l=85, r=85, t=105, b=55),
+        height=560,
     )
 
     return fig
