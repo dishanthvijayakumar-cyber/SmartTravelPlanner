@@ -1,9 +1,10 @@
 import streamlit as st
 import requests  # gives Python internet access for API calls
 from API import get_weather, get_destination_image  # import weather and image functions from API module
-from ml_charts import (
-    create_top3_radar_chart,            # radar chart comparing top 3 destinations across criteria
-    create_criteria_heatmap,            # heatmap showing how destinations score on each criterion
+from ml_results_visuals import (
+    show_ml_loading_card,
+    create_top3_separate_radar_charts,  # radar chart comparing top 3 destinations across criteria
+    create_criteria_heatmap,            #heatmap showing how destinations score on each criterion
     create_score_distribution_chart,    # chart showing distribution of match scores
 )
 
@@ -12,20 +13,20 @@ from ml_travel_recommender import (
     predict_destination_scores,   # scores each destination based on user preferences
     train_match_model,            # trains the ML model on destination data
 )
-@st.cache_data                    # cache the destinations so the database is only queried once per session (less time-consuming)
+@st.cache_data(show_spinner=False)# cache the destinations so the database is only queried once per session (less time-consuming)
 def load_destinations_cached():
     return load_project_destinations()    # load all destinations from the SQL database
 
-@st.cache_resource                # cache the trained model as a shared resource — more efficient than cache_data for ML models
+@st.cache_resource(show_spinner=False)    # cache the trained model as a shared resource — more efficient than cache_data for ML models
 def train_model_cached():
     destinations = load_destinations_cached()    # load destinations to train on
     return train_match_model(destinations)       # train and return the ML model
 
-@st.cache_data(ttl=3600)          # cache weather data for 1 hour — weather changes but not every second
+@st.cache_data(ttl=3600, show_spinner=False)          # cache weather data for 1 hour — weather changes but not every second
 def cached_weather(place):
     return get_weather(place)     # fetch live weather from OpenWeatherMap API for the given place
 
-@st.cache_data(ttl=86400)                        # cache images for 24 hours (86400 seconds), photos rarely change
+@st.cache_data(ttl=86400, show_spinner=False)                        # cache images for 24 hours (86400 seconds), photos rarely change
 def cached_destination_image(place):             
     return get_destination_image(place)          # fetch destination photo from Unsplash API
 
@@ -284,16 +285,19 @@ st.title("🎯 Your Top 10 Destinations")  # page title
 # ============================================================
 import plotly.express as px  # import plotly for bar chart visualization
 
+loading_card = show_ml_loading_card()
+
 destinations = load_destinations_cached()  # load cached destinations
 model_bundle = train_model_cached()  # use cached trained ML model
 
-
-# score each destination based on user preferences using the ML model
+# Score each destination based on user preferences using the ML model.
 ml_scores = predict_destination_scores(
     st.session_state.preferences,
     destinations,
     model_bundle,
 )
+
+loading_card.empty()
 
 # create a dictionary mapping destination name to its ML score for quick lookup
 score_map = dict(zip(ml_scores["destination"], ml_scores["ml_match_score"]))
@@ -329,8 +333,9 @@ st.plotly_chart(fig, use_container_width=True)  # display chart full width
 
 # This radar chart compares the strongest matching criteria for the Top 3 ML-ranked destinations.
 # Different line styles and markers help distinguish destinations even when their values overlap.
-st.subheader("Top 3 ML Criteria Radar")
-st.plotly_chart(create_top3_radar_chart(ml_scores), use_container_width=True)
+st.subheader("Top 3 ML Criteria Profiles")
+st.plotly_chart(create_top3_separate_radar_charts(ml_scores), use_container_width=True)
+
 
 # This heatmap shows how well the best destinations match each individual questionnaire criterion.
 # Darker colors indicate stronger matches, while the numbers make the scores easy to compare.
