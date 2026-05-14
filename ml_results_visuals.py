@@ -3,13 +3,20 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
 
-# This file contains the visual UI helpers for the ML results section.
-# It keeps charts and loading messages separate from TravelPlannerResults.py,
-# so the main Results page stays easier to understand.
+# This file contains the visual helper functions for the ML section on the
+# TravelPlannerResults page. The purpose of separating these functions from the
+# page file is to keep the main Streamlit page readable: TravelPlannerResults.py
+# decides when to show something, while this file decides how the ML graphics
+# should look.
 
-# These columns are produced by predict_destination_scores() in ml_travel_recommender.py.
-# "accommodation_score" is intentionally not included because the current database
-# does not contain reliable accommodation information for each destination.
+# These criterion columns are created in ml_travel_recommender.py inside
+# predict_destination_scores(). Each column contains a score from 0 to 100 that
+# explains one part of the final ML Match Score.
+#
+# "accommodation_score" is not shown here because the current destination
+# database does not provide reliable accommodation data for every destination.
+# Keeping it out of the charts avoids displaying a category that would often be
+# zero for data-quality reasons instead of user-preference reasons.
 CRITERIA_COLUMNS = [
     "budget_score",
     "climate_score",
@@ -19,6 +26,8 @@ CRITERIA_COLUMNS = [
     "pace_score",
 ]
 
+# These labels are the user-friendly names shown on the chart axes. They are
+# intentionally short because radar charts have limited space around the circle.
 CRITERIA_LABELS = [
     "Budget",
     "Climate",
@@ -28,7 +37,9 @@ CRITERIA_LABELS = [
     "Pace",
 ]
 
-# Shared colors keep all ML graphics visually consistent with the purple app design.
+# Shared colors keep the ML graphics visually consistent with the existing
+# SmartTravel design. Using constants also makes it easy to adjust the visual
+# style later without editing every chart function.
 BACKGROUND = "#1a0030"
 PAPER = "rgba(0,0,0,0)"
 PURPLE = "#8a2be2"
@@ -40,13 +51,21 @@ WHITE = "#ffffff"
 
 def show_ml_loading_card(message="Calculating your personalized ML travel matches"):
     """
-    Display a custom loading card while the ML model and scores are prepared.
+    Show a custom loading card while the ML result section is being prepared.
 
-    The function returns a Streamlit placeholder. After the ML calculation is
-    finished, call loading_card.empty() to remove the loading message.
+    Streamlit's default cache spinner can show technical function names such as
+    "Running train_model_cached()". This custom loading card is more user
+    friendly because it explains what the app is doing in plain language.
     """
 
+    # st.empty() creates a temporary placeholder on the page. The Results page
+    # can later call loading_card.empty() to remove this loading message after
+    # the model has finished scoring the destinations.
     loading_card = st.empty()
+
+    # The HTML/CSS below is only used for presentation. It does not affect the
+    # ML calculation itself. The moving gradient bar gives users visual feedback
+    # that the app is actively working.
     loading_card.markdown(
         f"""
         <style>
@@ -102,6 +121,8 @@ def show_ml_loading_card(message="Calculating your personalized ML travel matche
         unsafe_allow_html=True,
     )
 
+    # Returning the placeholder gives the Results page control over when the
+    # loading card should disappear.
     return loading_card
 
 
@@ -109,10 +130,13 @@ def create_ml_score_bar_chart(sorted_recommendations):
     """
     Create the main bar chart for the Top-10 ML-ranked destinations.
 
-    The chart uses the ML match score already attached to each recommendation
-    dictionary in TravelPlannerResults.py.
+    This function is optional in the current project because the Results page
+    may already create its own bar chart. It is kept here as a reusable chart
+    helper in case the team wants all ML charts in one file.
     """
 
+    # Each recommendation is a dictionary from TravelPlannerResults.py. The ML
+    # score is attached there under "ml_match_score" before the chart is shown.
     fig = go.Figure(
         data=[
             go.Bar(
@@ -124,6 +148,8 @@ def create_ml_score_bar_chart(sorted_recommendations):
         ]
     )
 
+    # The layout uses transparent backgrounds so the chart blends into the
+    # purple Results page instead of appearing as a separate white Plotly panel.
     fig.update_layout(
         title="Top 10 Destinations by ML Match Score",
         paper_bgcolor=PAPER,
@@ -142,11 +168,17 @@ def create_top3_separate_radar_charts(ml_scores):
     """
     Create three separate radar charts for the Top-3 ML destinations.
 
-    Separate radar charts are easier to read than one combined radar chart
-    because the destination lines no longer overlap each other.
+    A single combined radar chart made the destination lines overlap. This
+    version uses one radar chart per destination, so each Top-3 recommendation
+    can be understood on its own.
     """
 
+    # The ML scores DataFrame is already sorted by "ml_match_score" in
+    # ml_travel_recommender.py. Therefore, head(3) gives the best three matches.
     top_3 = ml_scores.head(3)
+
+    # Plotly subplots allow three polar charts to be shown in one row. The
+    # horizontal spacing gives the axis labels more room and reduces overlap.
     fig = make_subplots(
         rows=1,
         cols=3,
@@ -158,15 +190,22 @@ def create_top3_separate_radar_charts(ml_scores):
         ],
     )
 
+    # Each radar chart receives its own accent color so the three destination
+    # profiles feel related but still visually distinct.
     colors = [ORANGE, LIGHT_PURPLE, PINK]
 
     for index, (_, row) in enumerate(top_3.iterrows(), start=1):
+        # Read the explanatory criterion scores for this destination. These
+        # scores are not the model input itself; they are interpretable helper
+        # values that explain the recommendation.
         values = [row[column] for column in CRITERIA_COLUMNS]
 
-        # Repeat the first value at the end so the radar polygon closes.
+        # Radar charts need the first point repeated at the end so the polygon
+        # closes visually.
         closed_values = values + [values[0]]
         closed_labels = CRITERIA_LABELS + [CRITERIA_LABELS[0]]
 
+        # Add one filled radar polygon to the matching subplot column.
         fig.add_trace(
             go.Scatterpolar(
                 r=closed_values,
@@ -184,7 +223,8 @@ def create_top3_separate_radar_charts(ml_scores):
             col=index,
         )
 
-    # Apply the same polar-axis styling to all three subplots.
+    # This shared polar-axis layout is reused for all three radar charts. The
+    # 0-100 range matches the ML criterion score scale.
     polar_layout = dict(
         bgcolor=BACKGROUND,
         radialaxis=dict(
@@ -199,6 +239,8 @@ def create_top3_separate_radar_charts(ml_scores):
         ),
     )
 
+    # The same polar layout must be assigned to polar, polar2, and polar3
+    # because Plotly creates one polar coordinate system per subplot.
     fig.update_layout(
         title="Top 3 ML Criteria Profiles",
         paper_bgcolor=PAPER,
@@ -218,11 +260,16 @@ def create_criteria_heatmap(ml_scores):
     """
     Create a heatmap for the Top-5 ML destinations.
 
-    The heatmap shows which criteria helped each destination rank highly.
-    Black text is used inside the cells to keep the numbers readable.
+    The heatmap gives a compact overview of which questionnaire criteria helped
+    each destination rank highly. It is especially useful for explaining the
+    model output to users and teachers.
     """
 
+    # Only the best five destinations are shown to keep the heatmap readable.
     top_5 = ml_scores.head(5)
+
+    # Plotly expects the heatmap values as a matrix. The rows are destinations,
+    # and the columns are the criterion scores.
     z_values = top_5[CRITERIA_COLUMNS].to_numpy()
 
     fig = go.Figure(
@@ -230,6 +277,8 @@ def create_criteria_heatmap(ml_scores):
             z=z_values,
             x=CRITERIA_LABELS,
             y=top_5["destination"],
+            # The color scale starts light and ends in orange so high scores
+            # stand out without making low scores unreadable.
             colorscale=[
                 [0.00, "#f8f4ff"],
                 [0.35, "#d8b4fe"],
@@ -240,12 +289,16 @@ def create_criteria_heatmap(ml_scores):
             zmax=100,
             text=z_values,
             texttemplate="%{text:.0f}",
+            # Black labels are easier to read on the bright heatmap colors.
             textfont=dict(color="black", size=14),
+            # This syntax is compatible with older Plotly versions.
             colorbar=dict(title="Score", tickfont=dict(color=WHITE)),
             hovertemplate="<b>%{y}</b><br>%{x}: %{z:.1f}/100<extra></extra>",
         )
     )
 
+    # The transparent page background and white fonts make the chart match the
+    # rest of the Streamlit Results page.
     fig.update_layout(
         title="Top 5 ML Criterion Strengths",
         paper_bgcolor=PAPER,
@@ -262,16 +315,21 @@ def create_criteria_heatmap(ml_scores):
 
 def create_score_distribution_chart(ml_scores):
     """
-    Show how the ML match score changes across the ranked destinations.
+    Show how the ML Match Score changes across the ranked destinations.
 
-    This helps users see whether the first result is clearly ahead or whether
-    several destinations are similarly strong matches.
+    If the line drops quickly, the first destination is much stronger than the
+    rest. If the line stays flat, several destinations are similarly suitable.
     """
 
+    # Resetting the index makes it easy to create a clean ranking position from
+    # 1 to the number of scored destinations.
     ranked = ml_scores.reset_index(drop=True).copy()
     ranked["rank"] = ranked.index + 1
 
     fig = go.Figure()
+
+    # The filled line chart works well for showing the overall score pattern
+    # across the ranked list without taking too much vertical space.
     fig.add_trace(
         go.Scatter(
             x=ranked["rank"],
@@ -281,7 +339,7 @@ def create_score_distribution_chart(ml_scores):
             marker=dict(size=8, color=ORANGE, line=dict(color=WHITE, width=1)),
             fill="tozeroy",
             fillcolor="rgba(245,158,11,0.18)",
-            hovertemplate="Rank %{x}<br>ML Match Score: %{y:.1f}/100<extra></extra>",
+            hovertemplate="Rank %{x}<br>ML Score: %{y:.1f}/100<extra></extra>",
         )
     )
 
