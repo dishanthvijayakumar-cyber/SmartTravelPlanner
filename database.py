@@ -10,7 +10,7 @@ connection.commit() #Save all changes made by the script to the database
 connection = sqlite3.connect('destinations.db') #Reconnect to the database for subsequent use
 
 
-#AI-generated: function that retrieves all destinations with their tags
+#Function that retrieves all destinations with their tags
 def get_destinations():  
     conn = sqlite3.connect('destinations.db') #Connect to the SQLite database file
     conn.row_factory = sqlite3.Row #Allow accessing columns by name instead of index
@@ -18,14 +18,14 @@ def get_destinations():
 
     #Report all destinations from the destinations table
     cursor.execute("SELECT * FROM destinations")
-    destinations = cursor.fetchall() #AI-generated: report all rows as a list
+    destinations = cursor.fetchall() #Report all rows as a list
 
     result = []
     for dest in destinations:
         #For each destination, it reports its associated tags (styles, interests, activities, accommodation)
         cursor.execute(
             "SELECT tag_type, tag_value FROM destination_tags WHERE destination_id = ?",
-            (dest["id"],) #AI-generated: uses parameterized query to avoid SQL injection
+            (dest["id"],) #Uses parameterized query to avoid SQL injection
         )
         tags = cursor.fetchall() 
 
@@ -60,5 +60,5 @@ def get_destinations():
             "accommodation": accommodations,
         })
 
-    conn.close() #AI-generated: Close the database connection to free up resources
+    conn.close() #Close the database connection to free up resources
     return result
