@@ -79,6 +79,7 @@ with col4: #adds on to the bottom of column 4 to show the total trip budget
 st.header("🌤️ Current Weather")
 weather = get_weather(destination["place"]) #gets the weather for the selected destination using the get_weather function from the API module, giving the place name from the selected destination stored in session state. Saved in weather variable for use in dashboard
 
+# Design: AI-generated
 if weather:
     col1, col2, col3, col4 = st.columns(4) #creates four columns to display different weather metrics
     with col1: #defines column 1 content
@@ -143,6 +144,7 @@ for i, activity in enumerate(recommended, 1):
         if img_url:    # only display image if one was successfully found
             st.image(img_url, use_container_width=True)
     with col2:    # activity info goes in the right column
+        # Design: AI-generated
         st.markdown(f"""
         <div style="background:rgba(255,255,255,0.04); border:1px solid rgba(192,132,252,0.15);
              border-radius:14px; padding:18px 20px; margin-bottom:12px;">
