@@ -1,15 +1,13 @@
-import streamlit as st  # Streamlit is the framework we're using to build the web app
-import random  # We need this to pick a random destination when user clicks "Try Another"
-import sys
+import streamlit as st  # Streamlit framework for the web app
+import random  # Used to pick a random destination
+import sys # Needed for path handling
 
-# This line is a bit of a workaround - we're telling Python to also look in the current folder
-# when searching for modules. This is needed because Streamlit sometimes has trouble finding
-# our local files like database.py
+# Make sure local modules like database.py can be found
 sys.path.insert(0, '.')
-from database import get_destinations  # Get the list of all possible destinations from our database
-from API import get_destination_image  # Function to fetch nice travel photos from Unsplash
+from database import get_destinations  # Loads all available travel destinations
+from API import get_destination_image  # Fetches images from Unsplash API
 
-# Here we set up how the browser tab looks - title and a dice emoji as the icon
+# Set page title and browser tab icon
 st.set_page_config(page_title="SmartTravel - Surprise!", page_icon="🎲")
 
 # Design Improvement (AI Generated)
@@ -44,23 +42,21 @@ h1, h2, h3 { font-family: 'Playfair Display', serif !important; }
 """, unsafe_allow_html=True)
 # Design improvement over
 
-# Simple back button so users can go back to the main page
+# Back button to home page
 if st.button("Return Home", icon="🏠"):
     st.switch_page("TravelPlannerDemo.py")
 
-# Check if the user actually came here through the app properly (not just typing the URL directly)
-# If there's no destination saved in the session, we show a warning and send them back home
-# This prevents people from landing on a broken page
+# Ensure destination exists in session state
+# Prevents direct URL access without selecting a destination first
 if "selected_destination" not in st.session_state:
     st.warning("No destination selected. Going back home...")
     st.switch_page("TravelPlannerDemo.py")
     st.stop()  # This stops the page from rendering anything else
 
-# Get the destination that was randomly picked earlier and stored in session state
-# Session state is like a temporary memory that keeps data while the user browses around
+# Load selected destination from session memory
 destination = st.session_state.selected_destination
 
-# Design Improvement: This creates the big header at the top of the page with the destination name (AI Generated)
+# Header section with destination name (AI Generated)
 st.markdown(f"""
 <div style="text-align:center; padding:30px 20px 20px;">
     <p style="font-size:0.75rem; letter-spacing:4px; text-transform:uppercase; color:#c084fc; margin-bottom:10px;">
@@ -77,20 +73,18 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 
-# Get a nice travel photo for the destination from Unsplash
-# We search Unsplash using "{place} travel landmark" which usually gives good results
-# Unsplash is a free photo site with really nice travel pictures
+# Fetch image for destination
+# Uses Unsplash API (fallback handled below if it fails)
 img_url = get_destination_image(destination["place"])
 
-# If we got a photo back from Unsplash, show it (400px wide for the surprise page)
-# If the API fails or doesn't find anything, we fall back to grabbing a Wikipedia image instead
+# Show image (or fallback if API fails)
 if img_url:
     st.image(img_url, width=400)
 else:
+    # Fallback image from Wikipedia if Unsplash doesn't return anything
     st.image(f"https://en.wikipedia.org/wiki/Special:FilePath/{destination['place']}.jpg", width=400)
 
-# Show some quick stats about the destination in three columns
-# This gives users an immediate overview: what the climate is like and roughly how expensive it is
+# Quick overview metrics (climate + budget range)
 col1, col2, col3 = st.columns(3)
 with col1:
     st.metric("Climate", destination["climate"].capitalize())
@@ -101,13 +95,11 @@ with col3:
 
 st.markdown("---")
 
-# A simple subheader and the description sentence we stored for this destination
+# Description section
 st.subheader("About this destination")
 st.write(destination["description_sentence"])
 
-# Build up a list of interesting tags/details about this destination
-# We go through each possible field and only add it to our list if it actually has data
-# This way we don't show empty rows with nothing in them
+# Collect optional metadata into structured tags
 tags = []
 if destination.get("best_for"):
     tags.append(("🏆 Best for", destination["best_for"]))
@@ -120,8 +112,8 @@ if destination.get("styles"):
 if destination.get("accommodation"):
     tags.append(("🏨 Accommodation", ", ".join(destination["accommodation"])))
 
-# Loop through our tags and display each one as a little row with an emoji and text
-# Using HTML divs to make the labels and values line up nicely side by side (AI-generated)
+# Render tags as simple rows (kept clean, no overdesigned UI)
+# (AI-generated layout improvement)
 for label, value in tags:
     st.markdown(f"""
     <div style="display:flex; gap:12px; margin-bottom:10px; align-items:flex-start;">
@@ -132,7 +124,7 @@ for label, value in tags:
 
 st.markdown("---")
 
-# Two buttons at the bottom of the page so the user can decide what to do next
+# Action buttons section
 col1, col2 = st.columns(2)
 with col1:
     # This button takes them to the full trip planning dashboard where they can see activities etc.
