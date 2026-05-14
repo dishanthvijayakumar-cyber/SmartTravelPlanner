@@ -12,6 +12,8 @@ from sklearn.model_selection import train_test_split
 # into this file, and this file returns one ML Match Score from 0 to 100 for
 # each destination.
 
+# Codex was used as an assistant for creating this code/ python file
+
 # A fixed random seed makes the generated training data and model training more
 # reproducible. This is helpful for a university project because the team can
 # explain and debug the model more easily.
