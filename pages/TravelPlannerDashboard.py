@@ -1,5 +1,5 @@
 import streamlit as st
-from API import get_weather, get_activities, get_destination_image #imports from API module to get weather and activity data for the dashboard
+from API import get_weather, get_activities, get_destination_image #imports from API module to get weather, activity and image data for the dashboard
 
 st.set_page_config(page_title="SmartTravel - Dashboard", page_icon="👤") #sets a tab title and icon
 
