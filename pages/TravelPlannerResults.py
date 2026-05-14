@@ -391,6 +391,7 @@ for rank, destination in enumerate(sorted_recs, 1):  # loop through top 10, star
     if weather:  # only display if weather data was successfully retrieved
         col1, col2, col3, col4 = st.columns(4)  # 4 columns for weather metrics
         with col1:  # temperature
+        # Design for all columns: AI-generated
             st.markdown(f"""<div style="color:#c084fc; font-size:0.8rem;">Temperature</div>
             <div style="color:#ffffff; font-size:1rem; font-weight:600;">{weather['temp']}°C</div>""",
             unsafe_allow_html=True)
@@ -425,6 +426,7 @@ for rank, destination in enumerate(sorted_recs, 1):  # loop through top 10, star
         color = colors.get(level, "#9ca3af")  # get color, grey as fallback
 
         # build risk indicator tags from the risks list
+        # Risk list design: AI-generated
         risk_tags = " ".join([
             f'<span style="background:rgba(255,255,255,0.1); border-radius:6px; padding:2px 8px; font-size:0.75rem; margin-right:4px;">{RISK_DESCRIPTIONS[r]}</span>'
             for r in risks
@@ -445,6 +447,7 @@ for rank, destination in enumerate(sorted_recs, 1):  # loop through top 10, star
         """, unsafe_allow_html=True)
     else:
         # show neutral placeholder if no advisory found for this country
+        # Design: AI-generated
         st.markdown("""
         <div style="background:rgba(255,255,255,0.04); border:1px solid rgba(156,163,175,0.3);
              border-radius:12px; padding:12px 16px; margin-top:8px;">
