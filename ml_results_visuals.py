@@ -65,7 +65,7 @@ def show_ml_loading_card(message="Calculating your personalized ML travel matche
     # the model has finished scoring the destinations.
     loading_card = st.empty()
 
-    # The HTML/CSS below is only used for presentation. It does not affect the
+    # The HTML/CSS below (AI generated) is only used for presentation. It does not affect the
     # ML calculation itself. The moving gradient bar gives users visual feedback
     # that the app is actively working.
     loading_card.markdown(
