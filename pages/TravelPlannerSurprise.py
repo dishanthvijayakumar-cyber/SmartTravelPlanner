@@ -12,8 +12,7 @@ from API import get_destination_image  # Function to fetch nice travel photos fr
 # Here we set up how the browser tab looks - title and a dice emoji as the icon
 st.set_page_config(page_title="SmartTravel - Surprise!", page_icon="🎲")
 
-# This big block is our custom CSS styling to make the app look good (dark purple theme, nice fonts, etc.)
-# CSS is basically just styling rules - we're overriding Streamlit's default look to match our design
+# Design Improvement (AI Generated)
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap');
@@ -43,7 +42,7 @@ h1, h2, h3 { font-family: 'Playfair Display', serif !important; }
 [data-testid="stMetricLabel"] { color: #c084fc !important; }
 </style>
 """, unsafe_allow_html=True)
-
+# Design improvement over
 
 # Simple back button so users can go back to the main page
 if st.button("Return Home", icon="🏠"):
@@ -61,8 +60,7 @@ if "selected_destination" not in st.session_state:
 # Session state is like a temporary memory that keeps data while the user browses around
 destination = st.session_state.selected_destination
 
-# This creates the big header at the top of the page with the destination name
-# We're using HTML inside the markdown to create a nice gradient text effect and center everything
+# Design Improvement: This creates the big header at the top of the page with the destination name (AI Generated)
 st.markdown(f"""
 <div style="text-align:center; padding:30px 20px 20px;">
     <p style="font-size:0.75rem; letter-spacing:4px; text-transform:uppercase; color:#c084fc; margin-bottom:10px;">
@@ -77,6 +75,7 @@ st.markdown(f"""
     <p style="color:#d8b4fe; font-size:1.1rem; font-weight:300;">✈️ {destination['country']}</p>
 </div>
 """, unsafe_allow_html=True)
+
 
 # Get a nice travel photo for the destination from Unsplash
 # We search Unsplash using "{place} travel landmark" which usually gives good results
@@ -122,7 +121,7 @@ if destination.get("accommodation"):
     tags.append(("🏨 Accommodation", ", ".join(destination["accommodation"])))
 
 # Loop through our tags and display each one as a little row with an emoji and text
-# Using HTML divs to make the labels and values line up nicely side by side
+# Using HTML divs to make the labels and values line up nicely side by side (AI-generated)
 for label, value in tags:
     st.markdown(f"""
     <div style="display:flex; gap:12px; margin-bottom:10px; align-items:flex-start;">
