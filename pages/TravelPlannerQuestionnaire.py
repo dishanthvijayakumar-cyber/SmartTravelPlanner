@@ -53,9 +53,6 @@ h1, h2, h3 { font-family: 'Playfair Display', serif !important; }
 
 
 
-from recommender import get_recommendations  # Imports recommendation function from recommender module
-
-
 
 if st.button("Return Home", icon="🏠"): #adds return home button with house icon
     st.switch_page("TravelPlannerDemo.py") #switches page to the home page when button is clicked
@@ -201,7 +198,6 @@ if st.button("View Results✔️"): #sets a view results button with a checkmark
         "travel_pace": travel_pace,  # save chosen travel pace to preferences
         "travel_duration": travel_duration,  # save chosen trip duration to preferences
     }
-    st.session_state.recommendations = get_recommendations(st.session_state.preferences)  # generate recommendation list from saved preferences
     st.switch_page("pages/TravelPlannerResults.py")  # navigate to the results page after saving preferences
 
 
