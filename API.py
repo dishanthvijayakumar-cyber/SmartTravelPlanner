@@ -90,14 +90,8 @@ def get_activities(city, travel_pace):
         return None, per_day  # return None if API call fails so the dashboard can handle it
 
 
-# ============================================
-# UNSPLASH API FOR DESTINATION IMAGES
-# ============================================
-# Unsplash is a free photo website with beautiful high-quality travel images
-# We use their API to search for photos that match each destination
-# To use it, you need a free API key from: https://unsplash.com/developers
-# The key below is linked to the SmartTravel account
 
+# UNSPLASH API FOR DESTINATION IMAGES
 
 def get_destination_image(place):
     """
