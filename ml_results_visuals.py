@@ -9,7 +9,7 @@ from plotly.subplots import make_subplots
 # decides when to show something, while this file decides how the ML graphics
 # should look.
 
-# Codex was used as an assistant for creating this code/ python file
+# Codex was used as an assistant for creating this code/ python file. All HTML and HTML-like design code was fully AI Generated
 
 # These criterion columns are created in ml_travel_recommender.py inside
 # predict_destination_scores(). Each column contains a score from 0 to 100 that
