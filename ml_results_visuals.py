@@ -9,6 +9,8 @@ from plotly.subplots import make_subplots
 # decides when to show something, while this file decides how the ML graphics
 # should look.
 
+# Codex was used as an assistant for creating this code/ python file
+
 # These criterion columns are created in ml_travel_recommender.py inside
 # predict_destination_scores(). Each column contains a score from 0 to 100 that
 # explains one part of the final ML Match Score.
